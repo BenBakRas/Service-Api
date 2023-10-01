@@ -26,7 +26,7 @@ namespace ServiceData.ModelLayer
             Type = type;
         }
 
-        //Constructor with Id
+        //Reuses constructor with Id
         public Shop(int id, string name, string location, _Type type) : this(name, location, type)
         {
             Id = id;
