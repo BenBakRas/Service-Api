@@ -17,7 +17,7 @@ namespace ServiceDataTest
         private readonly ITestOutputHelper _extraOutput;
         readonly private IIngredient _ingredientAccess;
 
-        readonly string _connectionString = "Server=localhost; Integrated Security=true; Database=x";
+        readonly string _connectionString = "Server=localhost; Integrated Security=true; Database=ServiceDB";
 
         public IngredientDataTest(ITestOutputHelper output)
         {
@@ -39,7 +39,7 @@ namespace ServiceDataTest
             //Cleanup
             _ingredientAccess.DeleteIngredientById(insertedId); //Deletes as cleanup
         }
-
+        [Fact]
         public void TestDeleteIngredientById() 
         {
             // Arrange
@@ -53,7 +53,7 @@ namespace ServiceDataTest
             Assert.IsTrue(isDeleted);//Asserts true if object is deleted.
 
         }
-
+        [Fact]
         public void TestGetAllIngredients()
         {
             // Arrange
@@ -67,7 +67,7 @@ namespace ServiceDataTest
             // Assert
             Assert.IsTrue(IngredientsWereRead);
         }
-
+        [Fact]
         public void TestUpdateIngredient()
         {
             // Arrange

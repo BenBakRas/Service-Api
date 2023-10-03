@@ -34,7 +34,7 @@ namespace ServiceData.DatabaseLayer
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand CreateCommand = new SqlCommand(insertString, con))
             {
-                //Preparing parameters
+                //Preparing and adding parameters
                 SqlParameter productNumberParam = new("@Productnumber", product.ProductNumber);
                 CreateCommand.Parameters.Add(productNumberParam);
 
@@ -113,14 +113,14 @@ namespace ServiceData.DatabaseLayer
         {
             Product foundProduct;
             int readerID;
-            int readerProductNumber;
+            string readerProductNumber;
             string readerDescription;
             double readerPrice;
             int readerBarcode;
 
-            //fetch values
+            //Fetch values
             readerID = productReader.GetInt32(productReader.GetOrdinal("Id"));
-            readerProductNumber = productReader.GetInt32(productReader.GetOrdinal("ProductNumber"));
+            readerProductNumber = productReader.GetString(productReader.GetOrdinal("ProductNumber"));
             readerBarcode = productReader.GetInt32(productReader.GetOrdinal("Barcode"));
             readerDescription = productReader.GetString(productReader.GetOrdinal("Description"));
             readerPrice = productReader.GetDouble(productReader.GetOrdinal("Price"));
