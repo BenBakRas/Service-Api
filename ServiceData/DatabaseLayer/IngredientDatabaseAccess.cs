@@ -70,7 +70,7 @@ namespace ServiceData.DatabaseLayer
             List<Ingredient> foundIngredients;
             Ingredient readIng;
             //
-            string queryString = "SELECT Id, laneNumber FROM Lane";
+            string queryString = "SELECT Id, name, ingredientPrice FROM Ingredient";
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand readCommand = new SqlCommand(queryString, con))
             {
@@ -141,14 +141,16 @@ namespace ServiceData.DatabaseLayer
         private Ingredient GetIngFromReader(SqlDataReader ingredientsReader)
         {
             Ingredient foundIng;
-            int tempID, tempIngPrice;
+            int tempID;
+            double tempIngPrice;
             string tempIngName;
             //fetch values
             tempID = ingredientsReader.GetInt32(ingredientsReader.GetOrdinal("Id"));
-            tempIngPrice = ingredientsReader.GetInt32(ingredientsReader.GetOrdinal("IngredientPrice"));
+            tempIngPrice = ingredientsReader.GetDouble(ingredientsReader.GetOrdinal("IngredientPrice"));
             tempIngName = ingredientsReader.GetString(ingredientsReader.GetOrdinal("Name"));
             //Create ingredient object
             foundIng = new Ingredient(tempID, tempIngName, tempIngPrice);
+
 
             return foundIng;
         }

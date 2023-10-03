@@ -1,14 +1,11 @@
-﻿using ServiceData.ModelLayer;
-using ServiceData.DatabaseLayer;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit.Abstractions;
-using Microsoft.VisualStudio.TestPlatform.Utilities;
-using Xunit;
-using System.Numerics;
+using ServiceData.DatabaseLayer;
+using ServiceData.ModelLayer;
 
 namespace ServiceDataTest
 {
@@ -28,19 +25,19 @@ namespace ServiceDataTest
         public void TestCreateIngredient()
         {
             //Arrange
-            Ingredient ing1= new Ingredient("Salat", 10.00); //creates object
+            Ingredient ing1 = new Ingredient("Salat", 10.00); //creates object
 
             //Act
             int insertedId = _ingredientAccess.CreateIngredient(ing1); //Creates object and inserts into database and returns ID
 
             //Assert
-            Assert.IsTrue(insertedId > 0); //Asserts true if an Id was returned
+            Assert.True(insertedId > 0); //Asserts true if an Id was returned
 
             //Cleanup
             _ingredientAccess.DeleteIngredientById(insertedId); //Deletes as cleanup
         }
-
-        public void TestDeleteIngredientById() 
+        [Fact]
+        public void TestDeleteIngredientById()
         {
             // Arrange
             Ingredient ing1 = new Ingredient("Salat", 10.00); //Creates object
@@ -50,10 +47,10 @@ namespace ServiceDataTest
             bool isDeleted = _ingredientAccess.DeleteIngredientById(insertedId);//Deletes object
 
             // Assert
-            Assert.IsTrue(isDeleted);//Asserts true if object is deleted.
+            Assert.True(isDeleted);//Asserts true if object is deleted.
 
         }
-
+        [Fact]
         public void TestGetAllIngredients()
         {
             // Arrange
@@ -65,9 +62,9 @@ namespace ServiceDataTest
             _extraOutput.WriteLine("Number of Ingredients: " + readIngredients.Count);
 
             // Assert
-            Assert.IsTrue(IngredientsWereRead);
+            Assert.True(IngredientsWereRead);
         }
-
+        [Fact]
         public void TestUpdateIngredient()
         {
             // Arrange
@@ -84,10 +81,10 @@ namespace ServiceDataTest
             Ingredient retrivedIng = _ingredientAccess.GetIngredientById(insertedId);
 
             // Assert
-            Assert.IsTrue(isUpdated); //Assert true if update went through
-            Assert.IsNotNull(retrivedIng); //Asserts true of the retrieved object is not null
-            Assert.Equals(insertedId, retrivedIng.Id); //Asserts true if insertedID and retrivedId is the same
-            Assert.Equals(retrivedIng.IngredientPrice, 10); //Asserts true if retrived parameter equals given parameter, 10 in this case. 
+            Assert.True(isUpdated); //Assert true if update went through
+            Assert.NotNull(retrivedIng); //Asserts true of the retrieved object is not null
+            Assert.Equal(insertedId, retrivedIng.Id); //Asserts true if insertedID and retrivedId is the same
+            Assert.Equal(retrivedIng.IngredientPrice, 10); //Asserts true if retrived parameter equals given parameter, 10 in this case. 
 
             //Cleanup
             _ingredientAccess.DeleteIngredientById(insertedId);
