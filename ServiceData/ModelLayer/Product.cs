@@ -15,7 +15,6 @@ namespace ServiceData.ModelLayer
         public int? Barcode { get; set; }
         public enum _Category {Burgere, Salater, Sides, Dips}
         public _Category Category { get; set; }
-
         public int? ProductGroup { get; set; }
 
         //Empty Constructor

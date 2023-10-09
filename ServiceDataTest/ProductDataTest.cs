@@ -9,12 +9,12 @@ using ServiceData.ModelLayer;
 
 namespace ServiceDataTest
 {
-    public class ProducttDataTest
+    public class ProductDataTest
     {
         private readonly ITestOutputHelper _extraOutput;
         readonly private IProduct _productAccess;
 
-        readonly string _connectionString = "Server=localhost; Integrated Security=true; Database=ServiceDB";
+        readonly string _connectionString = "Server=Magnus-PC\\SQLEXPRESS; Integrated Security=true; Database=ServiceDB";
 
         public ProductDataTest(ITestOutputHelper output)
         {
@@ -64,8 +64,9 @@ namespace ServiceDataTest
             // Assert
             Assert.True(productsWereRead);
         }
-        [Fact]
-        /*
+        
+        
+        /*[Fact]
         public void TestUpdateIngredient()
         {
             // Arrange
@@ -91,7 +92,5 @@ namespace ServiceDataTest
             _ingredientAccess.DeleteIngredientById(insertedId);
 
         } */
-
-
     }
 }
