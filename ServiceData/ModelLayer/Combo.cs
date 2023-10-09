@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace ServiceData.ModelLayer
 {
-    internal class Combo
+    public class Combo
     {
+
+        public int Id { get; set; }
+
+        public string Name { get; set; }
+
+      
     }
 }
