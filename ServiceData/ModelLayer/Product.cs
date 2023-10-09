@@ -13,12 +13,10 @@ namespace ServiceData.ModelLayer
         public string? Description { get; set; }
         public double? Price { get; set; }
         public int? Barcode { get; set; }
-        public enum _Category {Burger, salater, sides, dips}
+        public enum _Category {Burgere, Salater, Sides, Dips}
         public _Category Category { get; set; }
 
         public int? ProductGroup { get; set; }
-
-        public List<Ingredient> ingredients { get; set; }
 
         //Empty Constructor
         public Product() { }

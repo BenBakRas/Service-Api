@@ -30,7 +30,8 @@ namespace ServiceData.DatabaseLayer
         {
             int insertedId = -1;
             //SQL string
-            string insertString = "INSERT INTO Product(ProductNumber, Description, Price, Barcode) OUTPUT INSERTED.ID values(@Productnumber, @Description, @Price, @Barcode)";
+            string insertString = "INSERT INTO Product(ProductNumber, Description, Price, Barcode, Category, ProductGroup) " +
+                "OUTPUT INSERTED.ID values(@Productnumber, @Description, @Price, @Barcode, @Category, ProductGroup)";
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand CreateCommand = new SqlCommand(insertString, con))
             {
@@ -46,6 +47,12 @@ namespace ServiceData.DatabaseLayer
 
                 SqlParameter productBarcodeParam = new("@Barcode", product.Barcode);
                 CreateCommand.Parameters.Add(productBarcodeParam);
+
+                SqlParameter productCategoryParam = new("@Category", product.Category);
+                CreateCommand.Parameters.Add(productCategoryParam);
+
+                SqlParameter productProdGroup = new("@ProductGroup", product.ProductGroup);
+                CreateCommand.Parameters.Add(productProdGroup);
 
                 con.Open();
                 // Execute save and read generated key(ID)
@@ -100,12 +107,56 @@ namespace ServiceData.DatabaseLayer
 
         public Product GetProductById(int id)
         {
-            throw new NotImplementedException();
+            Product foundProduct;
+            //
+            string queryString = "SELECT * FROM Product WHERE Id = @Id";
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            using (SqlCommand readCommand = new SqlCommand(queryString, con))
+            {
+                //Prepare SQL
+                SqlParameter idParam = new SqlParameter("@Id", id);
+                readCommand.Parameters.Add(idParam);
+                //
+                con.Open();
+                //Execute reead
+                SqlDataReader productReader = readCommand.ExecuteReader();
+                foundProduct = new Product();
+                while (productReader.Read())
+                {
+                    foundProduct = GetProductFromReader(productReader);
+                }
+            }
+            return foundProduct;
         }
 
         public bool UpdateProductById(Product productToUpdate)
         {
-            throw new NotImplementedException();
+            bool isUpdated = false;
+            string updateString = "UPDATE Product SET ProductNumber = @ProductNumber, Description = @Description, Price = @Price, Barcode = @Barcode," +
+                "Category = @Category, ProductGroup = @ProductGroup";
+
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            using (SqlCommand updateCommand = new SqlCommand(updateString, con))
+            {
+                updateCommand.Parameters.AddWithValue("@ProductNumber", productToUpdate.ProductNumber);
+                updateCommand.Parameters.AddWithValue("@Description", productToUpdate.Description);
+                updateCommand.Parameters.AddWithValue("@IngredientPrice", productToUpdate.Price);
+                updateCommand.Parameters.AddWithValue("@Barcode", productToUpdate.Barcode);
+                updateCommand.Parameters.AddWithValue("@Category", productToUpdate.Category);
+                updateCommand.Parameters.AddWithValue("@ProductGroup", productToUpdate.ProductGroup);
+
+                con.Open();
+                int rowsAffected = updateCommand.ExecuteNonQuery();
+
+                if (isUpdated = (rowsAffected > 0))
+                {
+                    return isUpdated;
+                }
+                else
+                {
+                    return false;
+                }
+            }
         }
 
 
@@ -117,6 +168,9 @@ namespace ServiceData.DatabaseLayer
             string readerDescription;
             double readerPrice;
             int readerBarcode;
+            string tempCategory;
+            bool readerCategory;
+            int readerProductGroup;
 
             //Fetch values
             readerID = productReader.GetInt32(productReader.GetOrdinal("Id"));
@@ -124,9 +178,13 @@ namespace ServiceData.DatabaseLayer
             readerBarcode = productReader.GetInt32(productReader.GetOrdinal("Barcode"));
             readerDescription = productReader.GetString(productReader.GetOrdinal("Description"));
             readerPrice = productReader.GetDouble(productReader.GetOrdinal("Price"));
+            tempCategory = productReader.GetString(productReader.GetOrdinal("Category"));
+            readerCategory = Enum.TryParse(tempCategory, out Product._Category categoryValue);
+            readerProductGroup = productReader.GetInt32(productReader.GetOrdinal("ProductGroup"));
+
 
             //Create product object
-            foundProduct = new Product(readerID, readerProductNumber, readerDescription, readerPrice, readerBarcode);
+            foundProduct = new Product(readerID, readerProductNumber, readerDescription, readerPrice, readerBarcode, categoryValue, readerProductGroup);
 
             return foundProduct;
         }
