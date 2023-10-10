@@ -74,31 +74,30 @@ namespace ServiceDataTest
         }
         
         
-        /*[Fact]
-        public void TestUpdateIngredient()
+        [Fact]
+        public void TestUpdateProduct()
         {
             // Arrange
-            Ingredient ing1 = new Ingredient("Salat", 10.00); //Creates object
-            int insertedId = _ingredientAccess.CreateIngredient(ing1); // Inserts object to Database
+            Product prod1 = new Product("1", "Hamburger", 50, 212141, Product._Category.Burgere, 1); //creates object
+            int insertedId = _productAccess.CreateProduct(prod1); // Inserts object to Database
 
             // Modify the Lane object
-            Ingredient updatedIng = new Ingredient(insertedId, "karl", 10);
+            Product updatedProd = new Product(insertedId, "2", "Pomfritter", 60, 212112, Product._Category.Sides, 1);
 
             // Act
-            bool isUpdated = _ingredientAccess.UpdateIngredientById(updatedIng);
+            bool isUpdated = _productAccess.UpdateProductById(updatedProd);
 
-            // Retrieve the updated Lane from the database
-            Ingredient retrivedIng = _ingredientAccess.GetIngredientById(insertedId);
+            // Retrieve the updated prod from the database
+            Product retrievedProd = _productAccess.GetProductById(insertedId);
 
             // Assert
             Assert.True(isUpdated); //Assert true if update went through
-            Assert.NotNull(retrivedIng); //Asserts true of the retrieved object is not null
-            Assert.Equal(insertedId, retrivedIng.Id); //Asserts true if insertedID and retrivedId is the same
-            Assert.Equal(retrivedIng.IngredientPrice, 10); //Asserts true if retrived parameter equals given parameter, 10 in this case. 
+            Assert.NotNull(retrievedProd); //Asserts true of the retrieved object is not null
+            Assert.Equal(insertedId, retrievedProd.Id); //Asserts true if insertedID and retrivedId is the same
+            Assert.Equal(retrievedProd.BasePrice, 60); //Asserts true if retrived parameter equals given parameter, 10 in this case. 
 
             //Cleanup
-            _ingredientAccess.DeleteIngredientById(insertedId);
-
-        } */
+            _productAccess.DeleteProductById(insertedId);
+        }
     }
 }
