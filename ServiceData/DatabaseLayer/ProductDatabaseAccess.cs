@@ -30,8 +30,8 @@ namespace ServiceData.DatabaseLayer
         {
             int insertedId = -1;
             //SQL string
-            string insertString = "INSERT INTO Product(ProductNumber, Description, Price, Barcode, Category, ProductGroup) " +
-                "OUTPUT INSERTED.ID values(@Productnumber, @Description, @Price, @Barcode, @Category, ProductGroup)";
+            string insertString = "INSERT INTO Product(ProductNumber, Description, BasePrice, Barcode, Category, ProductGroupID) " +
+                "OUTPUT INSERTED.ID values(@Productnumber, @Description, @BasePrice, @Barcode, @Category, @ProductGroupID)";
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand CreateCommand = new SqlCommand(insertString, con))
             {
@@ -42,7 +42,7 @@ namespace ServiceData.DatabaseLayer
                 SqlParameter productDescriptionParam = new("@Description", product.Description);
                 CreateCommand.Parameters.Add(productDescriptionParam);
 
-                SqlParameter productPriceParam = new("@Price", product.Price);
+                SqlParameter productPriceParam = new("@BasePrice", product.BasePrice);
                 CreateCommand.Parameters.Add(productPriceParam);
 
                 SqlParameter productBarcodeParam = new("@Barcode", product.Barcode);
@@ -51,7 +51,7 @@ namespace ServiceData.DatabaseLayer
                 SqlParameter productCategoryParam = new("@Category", product.Category);
                 CreateCommand.Parameters.Add(productCategoryParam);
 
-                SqlParameter productProdGroup = new("@ProductGroup", product.ProductGroup);
+                SqlParameter productProdGroup = new("@ProductGroupID", product.ProductGroup);
                 CreateCommand.Parameters.Add(productProdGroup);
 
                 con.Open();
@@ -132,18 +132,18 @@ namespace ServiceData.DatabaseLayer
         public bool UpdateProductById(Product productToUpdate)
         {
             bool isUpdated = false;
-            string updateString = "UPDATE Product SET ProductNumber = @ProductNumber, Description = @Description, Price = @Price, Barcode = @Barcode," +
-                "Category = @Category, ProductGroup = @ProductGroup";
+            string updateString = "UPDATE Product SET ProductNumber = @ProductNumber, Description = @Description, BasePrice = @BasePrice, Barcode = @Barcode," +
+                "Category = @Category, ProductGroupID = @ProductGroupID";
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand updateCommand = new SqlCommand(updateString, con))
             {
                 updateCommand.Parameters.AddWithValue("@ProductNumber", productToUpdate.ProductNumber);
                 updateCommand.Parameters.AddWithValue("@Description", productToUpdate.Description);
-                updateCommand.Parameters.AddWithValue("@IngredientPrice", productToUpdate.Price);
+                updateCommand.Parameters.AddWithValue("@BasePrice", productToUpdate.BasePrice);
                 updateCommand.Parameters.AddWithValue("@Barcode", productToUpdate.Barcode);
                 updateCommand.Parameters.AddWithValue("@Category", productToUpdate.Category);
-                updateCommand.Parameters.AddWithValue("@ProductGroup", productToUpdate.ProductGroup);
+                updateCommand.Parameters.AddWithValue("@ProductGroupID", productToUpdate.ProductGroup);
 
                 con.Open();
                 int rowsAffected = updateCommand.ExecuteNonQuery();
@@ -166,7 +166,7 @@ namespace ServiceData.DatabaseLayer
             int readerID;
             string readerProductNumber;
             string readerDescription;
-            double readerPrice;
+            double readerBasePrice;
             int readerBarcode;
             string tempCategory;
             bool readerCategory;
@@ -177,14 +177,14 @@ namespace ServiceData.DatabaseLayer
             readerProductNumber = productReader.GetString(productReader.GetOrdinal("ProductNumber"));
             readerBarcode = productReader.GetInt32(productReader.GetOrdinal("Barcode"));
             readerDescription = productReader.GetString(productReader.GetOrdinal("Description"));
-            readerPrice = productReader.GetDouble(productReader.GetOrdinal("Price"));
+            readerBasePrice = productReader.GetDouble(productReader.GetOrdinal("BasePrice"));
             tempCategory = productReader.GetString(productReader.GetOrdinal("Category"));
             readerCategory = Enum.TryParse(tempCategory, out Product._Category categoryValue);
-            readerProductGroup = productReader.GetInt32(productReader.GetOrdinal("ProductGroup"));
+            readerProductGroup = productReader.GetInt32(productReader.GetOrdinal("ProductGroupID"));
 
 
             //Create product object
-            foundProduct = new Product(readerID, readerProductNumber, readerDescription, readerPrice, readerBarcode, categoryValue, readerProductGroup);
+            foundProduct = new Product(readerID, readerProductNumber, readerDescription, readerBasePrice, readerBarcode, categoryValue, readerProductGroup);
 
             return foundProduct;
         }

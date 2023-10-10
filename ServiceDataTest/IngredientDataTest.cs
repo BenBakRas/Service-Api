@@ -14,7 +14,7 @@ namespace ServiceDataTest
         private readonly ITestOutputHelper _extraOutput;
         readonly private IIngredient _ingredientAccess;
 
-        readonly string _connectionString = "Server=localhost; Integrated Security=true; Database=x";
+        readonly string _connectionString = "Server=Magnus-PC\\SQLEXPRESS; Integrated Security=true; Database=ServiceDB";
 
         public IngredientDataTest(ITestOutputHelper output)
         {
@@ -47,7 +47,7 @@ namespace ServiceDataTest
             bool isDeleted = _ingredientAccess.DeleteIngredientById(insertedId);//Deletes object
 
             // Assert
-            Assert.True(isDeleted);//Asserts true if object is deleted.
+            Assert.True(isDeleted); //Asserts true if object is deleted.
 
         }
         [Fact]

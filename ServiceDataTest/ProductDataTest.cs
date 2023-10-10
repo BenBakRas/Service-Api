@@ -14,7 +14,7 @@ namespace ServiceDataTest
         private readonly ITestOutputHelper _extraOutput;
         readonly private IProduct _productAccess;
 
-        readonly string _connectionString = "Server=Magnus-PC\\SQLEXPRESS; Integrated Security=true; Database=ServiceDB";
+        readonly string _connectionString = "Server=Magnus-PC\\SQLEXPRESS; Integrated Security = true; Database=ServiceDB";
 
         public ProductDataTest(ITestOutputHelper output)
         {
@@ -37,7 +37,7 @@ namespace ServiceDataTest
             _productAccess.DeleteProductById(insertedId); //Deletes as cleanup
         }
         [Fact]
-        public void TestDeleteIngredientById()
+        public void TestDeleteProductById()
         {
             // Arrange
             Product prod1 = new Product("1", "Hamburger", 50, 212141, Product._Category.Burgere, 1); //creates object
@@ -49,11 +49,16 @@ namespace ServiceDataTest
             // Assert
             Assert.True(isDeleted);//Asserts true if object is deleted.
 
+            //Cleanup
+            _productAccess.DeleteProductById(insertedId); //Deletes as cleanup
+
         }
         [Fact]
-        public void TestGetAllIngredients()
+        public void TestGetAllProducts()
         {
             // Arrange
+            Product prod1 = new Product("1", "Hamburger", 50, 212141, Product._Category.Burgere, 1); //creates object
+            int insertedId = _productAccess.CreateProduct(prod1); // Inserts object to Database
 
             // Act
             List<Product> readProducts = _productAccess.GetAllProducts();
