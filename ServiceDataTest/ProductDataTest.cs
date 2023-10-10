@@ -25,7 +25,7 @@ namespace ServiceDataTest
         public void TestCreateProduct()
         {
             //Arrange
-            Product prod1 = new Product("1", "Hamburger", 50, 212141, Product._Category.Burgere, 1); //creates object
+            Product prod1 = new Product("12", "Hamburger", 50, 212141, Product._Category.Burgere, 1); //creates object
 
             //Act
             int insertedId = _productAccess.CreateProduct(prod1); //Creates object and inserts into database and returns ID
@@ -47,7 +47,7 @@ namespace ServiceDataTest
             bool isDeleted = _productAccess.DeleteProductById(insertedId);//Deletes object
 
             // Assert
-            Assert.True(isDeleted);//Asserts true if object is deleted.
+            Assert.True(isDeleted); //Asserts true if object is deleted.
 
             //Cleanup
             _productAccess.DeleteProductById(insertedId); //Deletes as cleanup
@@ -68,6 +68,9 @@ namespace ServiceDataTest
 
             // Assert
             Assert.True(productsWereRead);
+
+            // Cleanup
+            _productAccess.DeleteProductById(insertedId);
         }
         
         

@@ -54,6 +54,8 @@ namespace ServiceDataTest
         public void TestGetAllIngredients()
         {
             // Arrange
+            Ingredient ing1 = new Ingredient("Salat", 10.00); //Creates object
+            int insertedId = _ingredientAccess.CreateIngredient(ing1); // Inserts object to Database
 
             // Act
             List<Ingredient> readIngredients = _ingredientAccess.GetAllIngredients();
@@ -63,6 +65,9 @@ namespace ServiceDataTest
 
             // Assert
             Assert.True(IngredientsWereRead);
+
+            //Cleanup
+            _ingredientAccess.DeleteIngredientById(insertedId);
         }
         [Fact]
         public void TestUpdateIngredient()
