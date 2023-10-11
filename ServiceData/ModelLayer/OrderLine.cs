@@ -12,22 +12,22 @@ namespace ServiceData.ModelLayer
         public int Id { get; set; }
         public double OrderlinePrice { get; set; }
         public int Quantity { get; set; }
-        public Product? Product { get; set; }
+        public OrderlineGroup? OrderlineGroup { get; set; }
         public Orders? Orders { get; set; }
 
         //Empty Constructor
         public OrderLine() { }
 
         //Constructor with parameters
-        public OrderLine(double orderlinePrice, int quantity, Product product, Orders order)
+        public OrderLine(double orderlinePrice, int quantity, OrderlineGroup orderlineGrp , Orders order)
         {
             OrderlinePrice = orderlinePrice;
             Quantity = quantity;
-            Product = product;
+            OrderlineGroup = orderlineGrp;
             Orders = order;
         }
         //Constructor with Id
-        public OrderLine(int id, double orderlinePrice, int quantity, Product product, Orders order) : this (orderlinePrice, quantity, product, order)
+        public OrderLine(int id, double orderlinePrice, int quantity, OrderlineGroup orderlineGrp, Orders order) : this (orderlinePrice, quantity, orderlineGrp, order)
         {
             Id = id;
         }
