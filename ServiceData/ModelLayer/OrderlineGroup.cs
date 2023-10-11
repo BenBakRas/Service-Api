@@ -16,13 +16,13 @@ namespace ServiceData.ModelLayer
         public OrderlineGroup() { }
 
         //Constructor with parameteter xecept orderline
-        public OrderlineGroup(Product product, Combo combo)
+        public OrderlineGroup(Product product)
         {
             Product = product;
-            Combo = combo;
+           
         }
         //Constructor with orderline
-        public OrderlineGroup(Product product, Combo combo, OrderLine orderLine) : this (product, combo)
+        public OrderlineGroup(Product product, OrderLine orderLine) : this (product)
         {
             Orderline = orderLine;
         }
