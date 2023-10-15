@@ -9,8 +9,8 @@ namespace ServiceData.DatabaseLayer.Interfaces
 {
     public interface ICustomerGroup
     {
-        Discount GetCustomerGroupById(int id);
-        List<Discount> GetAllCustomerGroup();
+        CustomerGroup GetCustomerGroupById(int id);
+        List<CustomerGroup> GetAllCustomerGroup();
         int CreateCustomerGroup(CustomerGroup anCustomerGroup);
         bool DeleteCustomerGroupById(int id);
         bool UpdateCustomerGroupById(CustomerGroup customerGroupToUpdate);
