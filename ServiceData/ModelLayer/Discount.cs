@@ -9,7 +9,7 @@ namespace ServiceData.ModelLayer
     public class Discount
     {
         public int Id { get; set; }
-        public double Rate { get; set; }
+        public decimal Rate { get; set; }
         public int ProductGroupId { get ; set; }
         public int CustomerGroupId { get; set; }
 
@@ -18,7 +18,7 @@ namespace ServiceData.ModelLayer
         public Discount() { }
     
         //Constructor without Id Parameter
-        public Discount(double rate, int productGroupId, int customerGroupId )
+        public Discount(decimal rate, int productGroupId, int customerGroupId )
         {
 
             Rate = rate;
@@ -29,7 +29,7 @@ namespace ServiceData.ModelLayer
 
         //Reuses Constructor
 
-        public Discount(int id, double rate, int productGroupId, int customerGroupId) : this (rate, productGroupId, customerGroupId)
+        public Discount(int id, decimal rate, int productGroupId, int customerGroupId) : this (rate, productGroupId, customerGroupId)
         {
             Id = id;
         }
