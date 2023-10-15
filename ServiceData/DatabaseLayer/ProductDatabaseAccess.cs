@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using System.Numerics;
 using System.Data;
+using ServiceData.DatabaseLayer.Interfaces;
 
 namespace ServiceData.DatabaseLayer
 {
