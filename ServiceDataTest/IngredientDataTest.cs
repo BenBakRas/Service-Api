@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Xunit.Abstractions;
 using ServiceData.DatabaseLayer;
 using ServiceData.ModelLayer;
+using ServiceData.DatabaseLayer.Interfaces;
 
 namespace ServiceDataTest
 {
@@ -14,7 +15,8 @@ namespace ServiceDataTest
         private readonly ITestOutputHelper _extraOutput;
         readonly private IIngredient _ingredientAccess;
 
-        readonly string _connectionString = "Server=Magnus-PC\\SQLEXPRESS; Integrated Security=true; Database=ServiceDB";
+        //readonly string _connectionString = "Server=Magnus-PC\\SQLEXPRESS; Integrated Security=true; Database=ServiceDB";
+        readonly string _connectionString = "Server=localhost; Integrated Security=true; Database=x";
 
         public IngredientDataTest(ITestOutputHelper output)
         {

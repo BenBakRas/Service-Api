@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Xunit.Abstractions;
 using ServiceData.DatabaseLayer;
 using ServiceData.ModelLayer;
+using ServiceData.DatabaseLayer.Interfaces;
 
 namespace ServiceDataTest
 {
