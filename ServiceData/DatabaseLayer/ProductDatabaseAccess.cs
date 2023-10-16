@@ -21,10 +21,10 @@ namespace ServiceData.DatabaseLayer
             _connectionString = configuration.GetConnectionString("CompanyConnection");
         }
 
-        public ProductDatabaseAccess(string inConnectionString)
-        {
-            _connectionString = inConnectionString;
-        }
+            public ProductDatabaseAccess(string inConnectionString)
+            {
+                _connectionString = inConnectionString;
+            }
 
         public int CreateProduct(Product product)
         {
@@ -132,8 +132,8 @@ namespace ServiceData.DatabaseLayer
         public bool UpdateProductById(Product productToUpdate)
         {
             bool isUpdated = false;
-            string updateString = "UPDATE Product SET ProductNumber = @ProductNumber, Description = @Description, BasePrice = @BasePrice, Barcode = @Barcode," +
-                "Category = @Category, ProductGroupID = @ProductGroupID";
+            string updateString = "UPDATE Product SET ProductNumber = @ProductNumber, Description = @Description, BasePrice = @BasePrice, " +
+                "Barcode = @Barcode, Category = @Category, ProductGroupID = @ProductGroupID";
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand updateCommand = new SqlCommand(updateString, con))
