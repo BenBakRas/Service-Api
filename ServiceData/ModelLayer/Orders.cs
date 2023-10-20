@@ -41,6 +41,13 @@ namespace ServiceData.ModelLayer
             ShopId = shopId;
         }
 
+        public Orders(int orderNumber, DateTime dateTime, double totalPrice, int shopId)
+        {
+            OrderNumber = orderNumber;
+            DateTime = dateTime;
+            TotalPrice = totalPrice;
+            ShopId = shopId;
+        }
 
     }
 }

@@ -96,7 +96,54 @@ namespace ServiceData.DatabaseLayer
 
         public Orders GetOrderById(int id)
         {
-            throw new NotImplementedException();
+            Orders foundOrder;
+            //
+            string queryString = "SELECT * FROM Orders WHERE Id = @Id";
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            using (SqlCommand readCommand = new SqlCommand(queryString, con))
+            {
+                //Prepare SQL
+                SqlParameter idParam = new SqlParameter("@Id", id);
+                readCommand.Parameters.Add(idParam);
+                
+                con.Open();
+                //Execute read
+                SqlDataReader orderReader = readCommand.ExecuteReader();
+                foundOrder = new Orders();
+                while (orderReader.Read())
+                {
+                    foundOrder = GetOrdersFromReader(orderReader);
+                }
+            }
+            return foundOrder;
+        }
+
+        public bool UpdateOrderById(Orders orderToUpdate)
+        {
+            bool isUpdated = false;
+            string updateString = "UPDATE Orders SET OrderNumber = @OrderNumber, DateTime = @DateTime, TotalPrice = @TotalPrice, " +
+                "ShopID = @ShopId;";
+
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            using (SqlCommand updateCommand = new SqlCommand(updateString, con))
+            {
+                updateCommand.Parameters.AddWithValue("@OrderNumber", orderToUpdate.OrderNumber);
+                updateCommand.Parameters.AddWithValue("@DateTime", orderToUpdate.DateTime);
+                updateCommand.Parameters.AddWithValue("@TotalPrice", orderToUpdate.TotalPrice);
+                updateCommand.Parameters.AddWithValue("@ShopId", orderToUpdate.ShopId);
+
+                con.Open();
+                int rowsAffected = updateCommand.ExecuteNonQuery();
+
+                if (isUpdated = (rowsAffected > 0))
+                {
+                    return isUpdated;
+                }
+                else
+                {
+                    return false;
+                }
+            }
         }
 
         public bool UpdateOrderById(Product orderToUpdate)
