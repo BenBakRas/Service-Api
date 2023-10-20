@@ -13,6 +13,6 @@ namespace ServiceData.DatabaseLayer
         List<Orders> GetAllOrders();
         int CreateOrder(Orders aOrder);
         bool DeleteOrderById(int id);
-        bool UpdateOrderById(Product orderToUpdate);
+        bool UpdateOrderById(Orders orderToUpdate);
     }
 }

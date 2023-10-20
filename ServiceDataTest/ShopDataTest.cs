@@ -16,8 +16,8 @@ namespace ServiceDataTest
         private readonly ITestOutputHelper _extraOutput;
         private readonly IShop _shopAccess;
 
-        readonly string _connectionString = "Server=localhost; Integrated Security=true; Database=x";
-        //private readonly string _connectionString = "Server=Magnus-PC\\SQLEXPRESS; Integrated Security = true; Database=ServiceDB";
+        //readonly string _connectionString = "Server=localhost; Integrated Security=true; Database=x";
+        private readonly string _connectionString = "Server=Magnus-PC\\SQLEXPRESS; Integrated Security = true; Database=ServiceDB";
 
         public ShopDataTest(ITestOutputHelper output)
         {

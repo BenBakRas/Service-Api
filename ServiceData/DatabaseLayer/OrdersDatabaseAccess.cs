@@ -40,9 +40,9 @@ namespace ServiceData.DatabaseLayer
                 CreateCommand.Parameters.Add(aOrderDateTime);
 
                 SqlParameter aTotalPriceParam = new("TotalPrice", aOrder.TotalPrice);   
-                CreateCommand.Parameters.Add(aOrderNumberParam);
+                CreateCommand.Parameters.Add(aTotalPriceParam);
 
-                SqlParameter aOrderShopIdParam = new("ShopID", aOrder.Shop.Id);
+                SqlParameter aOrderShopIdParam = new("ShopID", aOrder.ShopId);
                 CreateCommand.Parameters.Add(aOrderShopIdParam);
 
                 con.Open();
