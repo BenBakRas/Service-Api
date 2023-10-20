@@ -146,21 +146,16 @@ namespace ServiceData.DatabaseLayer
             }
         }
 
-        public bool UpdateOrderById(Product orderToUpdate)
-        {
-            throw new NotImplementedException();
-        }
-
         private Orders GetOrdersFromReader(SqlDataReader ordersReader)
         {
             Orders foundOrder;
 
             //fetch values
             int readerId = ordersReader.GetInt32(ordersReader.GetOrdinal("Id"));
-            int readerOrderNumber = ordersReader.GetInt32(ordersReader.GetOrdinal("Id"));
+            int readerOrderNumber = ordersReader.GetInt32(ordersReader.GetOrdinal("OrderNumber"));
             DateTime readerDateTime = ordersReader.GetDateTime(ordersReader.GetOrdinal("DateTime"));
             double readerTotalPrice = ordersReader.GetDouble(ordersReader.GetOrdinal("TotalPrice"));
-            int readerShopId = ordersReader.GetInt32(ordersReader.GetInt32(ordersReader.GetOrdinal("ShopID")));
+            int readerShopId = ordersReader.GetInt32(ordersReader.GetOrdinal("ShopID"));
 
 
             //Create orders object
