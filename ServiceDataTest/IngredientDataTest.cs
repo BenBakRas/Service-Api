@@ -7,6 +7,7 @@ using Xunit.Abstractions;
 using ServiceData.DatabaseLayer;
 using ServiceData.ModelLayer;
 using ServiceData.DatabaseLayer.Interfaces;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ServiceDataTest
 {
@@ -15,19 +16,27 @@ namespace ServiceDataTest
         private readonly ITestOutputHelper _extraOutput;
         readonly private IIngredient _ingredientAccess;
 
-        readonly string _connectionString = "Server=Magnus-PC\\SQLEXPRESS; Integrated Security=true; Database=ServiceDB";
-        // readonly string _connectionString = "Server=localhost; Integrated Security=true; Database=x";
+        //readonly string _connectionString = "Server=Magnus-PC\\SQLEXPRESS; Integrated Security=true; Database=ServiceDB";
+        readonly string _connectionString = "Server=localhost; Integrated Security=true; Database=x";
 
         public IngredientDataTest(ITestOutputHelper output)
         {
             _extraOutput = output;
             _ingredientAccess = new IngredientDatabaseAccess(_connectionString);
         }
+        private byte[] GetTestImageBytes()
+        {
+            // Load test image data as a byte array
+            // You can use libraries like System.Drawing or read from an image file
+            // For simplicity, this example creates a small byte array
+            return new byte[] { 0x12, 0x34, 0x56, 0x78 };
+        }
+
         [Fact]
         public void TestCreateIngredient()
         {
             //Arrange
-            Ingredient ing1 = new Ingredient("Salat", 10.00); //creates object
+            Ingredient ing1 = new Ingredient("Salat", 10, GetTestImageBytes()); //creates object
 
             //Act
             int insertedId = _ingredientAccess.CreateIngredient(ing1); //Creates object and inserts into database and returns ID
@@ -42,7 +51,7 @@ namespace ServiceDataTest
         public void TestDeleteIngredientById()
         {
             // Arrange
-            Ingredient ing1 = new Ingredient("Salat", 10.00); //Creates object
+            Ingredient ing1 = new Ingredient("Salat", 10, GetTestImageBytes()); //creates object
             int insertedId = _ingredientAccess.CreateIngredient(ing1); // Inserts object to Database
 
             // Act
@@ -56,7 +65,7 @@ namespace ServiceDataTest
         public void TestGetAllIngredients()
         {
             // Arrange
-            Ingredient ing1 = new Ingredient("Salat", 10.00); //Creates object
+            Ingredient ing1 = new Ingredient("Salat", 10, GetTestImageBytes()); //creates object
             int insertedId = _ingredientAccess.CreateIngredient(ing1); // Inserts object to Database
 
             // Act
@@ -75,11 +84,11 @@ namespace ServiceDataTest
         public void TestUpdateIngredient()
         {
             // Arrange
-            Ingredient ing1 = new Ingredient("Salat", 10.00); //Creates object
+            Ingredient ing1 = new Ingredient("Salat", 10, GetTestImageBytes()); //creates object
             int insertedId = _ingredientAccess.CreateIngredient(ing1); // Inserts object to Database
 
             // Modify the Ingredient object
-            Ingredient updatedIng = new Ingredient(insertedId, "karl", 10);
+            Ingredient updatedIng = new Ingredient(insertedId, "karl", 10, GetTestImageBytes());
 
             // Act
             bool isUpdated = _ingredientAccess.UpdateIngredientById(updatedIng);

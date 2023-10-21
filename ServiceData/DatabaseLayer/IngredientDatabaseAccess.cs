@@ -31,19 +31,28 @@ namespace ServiceData.DatabaseLayer
         public int CreateIngredient(Ingredient anIngredient)
         {
             int insertedId = -1;
-            //
-            string insertString = "insert into Ingredient(name, ingredientPrice) OUTPUT INSERTED.ID values(@Name, @IngredientPrice)";
+
+            string insertString = "INSERT INTO Ingredient (name, ingredientPrice, Image) OUTPUT INSERTED.ID VALUES (@Name, @IngredientPrice, @Image)";
+
             using (SqlConnection con = new SqlConnection(_connectionString))
-            using (SqlCommand CreateCommand = new SqlCommand(insertString, con))
+            using (SqlCommand createCommand = new SqlCommand(insertString, con))
             {
-                SqlParameter aIngNameParam = new("@Name", anIngredient.Name);
-                CreateCommand.Parameters.Add(aIngNameParam);
-                SqlParameter aIngPrice = new("IngredientPrice", anIngredient.IngredientPrice);
-                CreateCommand.Parameters.Add(aIngPrice);
+                SqlParameter aIngNameParam = new SqlParameter("@Name", anIngredient.Name);
+                createCommand.Parameters.Add(aIngNameParam);
+
+                SqlParameter aIngPrice = new SqlParameter("@IngredientPrice", anIngredient.IngredientPrice);
+                createCommand.Parameters.Add(aIngPrice);
+
+                // Add the Image parameter
+                SqlParameter imageParam = new SqlParameter("@Image", anIngredient.Image);
+                createCommand.Parameters.Add(imageParam);
+
                 con.Open();
-                // Execute save and read generated key (ID)
-                insertedId = (int)CreateCommand.ExecuteScalar();
+
+                // Execute the command and read the generated key (ID)
+                insertedId = (int)createCommand.ExecuteScalar();
             }
+
             return insertedId;
         }
 
@@ -71,7 +80,7 @@ namespace ServiceData.DatabaseLayer
             List<Ingredient> foundIngredients;
             Ingredient readIng;
             //
-            string queryString = "SELECT Id, name, ingredientPrice FROM Ingredient";
+            string queryString = "SELECT Id, name, ingredientPrice, image FROM Ingredient";
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand readCommand = new SqlCommand(queryString, con))
             {
@@ -91,27 +100,31 @@ namespace ServiceData.DatabaseLayer
 
         public Ingredient GetIngredientById(int id)
         {
-            Ingredient foundIngredient;
-            //
-            string queryString = "select Id, name, ingredientPrice from Ingredient where id = @Id";
+            Ingredient foundIngredient = null;
+
+            string queryString = "select Id, name, ingredientPrice, image from Ingredient where id = @Id";
+
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand readCommand = new SqlCommand(queryString, con))
             {
-                //Prepare SQL
+                // Prepare SQL
                 SqlParameter idParam = new SqlParameter("@Id", id);
                 readCommand.Parameters.Add(idParam);
-                //
+
                 con.Open();
-                //Execute reead
-                SqlDataReader ingredientsReader = readCommand.ExecuteReader();
-                foundIngredient = new Ingredient();
-                while (ingredientsReader.Read())
+                // Execute read
+                using (SqlDataReader ingredientsReader = readCommand.ExecuteReader())
                 {
-                    foundIngredient = GetIngFromReader(ingredientsReader);
+                    while (ingredientsReader.Read())
+                    {
+                        foundIngredient = GetIngFromReader(ingredientsReader);
+                    }
                 }
             }
+
             return foundIngredient;
         }
+
 
         public bool UpdateIngredientById(Ingredient ingredientToUpdate)
         {
@@ -141,17 +154,33 @@ namespace ServiceData.DatabaseLayer
 
         private Ingredient GetIngFromReader(SqlDataReader ingredientsReader)
         {
-            Ingredient foundIng;
-            int tempID;
-            double tempIngPrice;
-            string tempIngName;
-            //fetch values
-            tempID = ingredientsReader.GetInt32(ingredientsReader.GetOrdinal("Id"));
-            tempIngPrice = ingredientsReader.GetDouble(ingredientsReader.GetOrdinal("IngredientPrice"));
-            tempIngName = ingredientsReader.GetString(ingredientsReader.GetOrdinal("Name"));
-            //Create ingredient object
-            foundIng = new Ingredient(tempID, tempIngName, tempIngPrice);
+            Ingredient foundIng = null;
 
+            int tempID;
+            decimal tempIngPrice;
+            string tempIngName;
+            byte[] tempImage;
+
+            // Fetch values
+            tempID = ingredientsReader.GetInt32(ingredientsReader.GetOrdinal("Id"));
+            tempIngPrice = ingredientsReader.GetDecimal(ingredientsReader.GetOrdinal("IngredientPrice"));
+            tempIngName = ingredientsReader.GetString(ingredientsReader.GetOrdinal("Name"));
+
+            // Check if the "Image" column is not null in the database
+            int imageColumnIndex = ingredientsReader.GetOrdinal("Image");
+            if (!ingredientsReader.IsDBNull(imageColumnIndex))
+            {
+                tempImage = (byte[])ingredientsReader[imageColumnIndex];
+            }
+            else
+            {
+                // Handle the case when the "Image" column is null in the database
+                // You can set tempImage to null or an empty byte array as needed.
+                tempImage = new byte[0]; // Empty byte array
+            }
+
+            // Create the Ingredient object
+            foundIng = new Ingredient(tempID, tempIngName, tempIngPrice, tempImage);
 
             return foundIng;
         }
