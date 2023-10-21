@@ -121,7 +121,7 @@ namespace ServiceData.DatabaseLayer
             {
                 updateCommand.Parameters.AddWithValue("@Id", DiscountToUpdate.Id);
                 updateCommand.Parameters.AddWithValue("@Rate", DiscountToUpdate.Rate);
-                updateCommand.Parameters.AddWithValue("@CustomerGroupId", DiscountToUpdate.ProductGroupId);
+                updateCommand.Parameters.AddWithValue("@ProductGroupId", DiscountToUpdate.ProductGroupId);
                 updateCommand.Parameters.AddWithValue("@CustomerGroupId", DiscountToUpdate.CustomerGroupId);
 
                 con.Open();

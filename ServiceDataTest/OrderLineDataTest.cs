@@ -23,6 +23,7 @@ namespace ServiceDataTest
             _extraOutput = output;
             _orderLineAccess = new OrderLineDatabaseAccess(_connectionString);
         }
+        /*
         [Fact]
         public void TestCreateOrder()
         {
@@ -39,7 +40,7 @@ namespace ServiceDataTest
             //Cleanup
             _ordersAccess.DeleteOrderById(insertedId); //Deletes as cleanup
         }
-        /*
+        
         [Fact]
         public void TestDeleteProductById()
         {

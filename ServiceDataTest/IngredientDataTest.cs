@@ -78,13 +78,13 @@ namespace ServiceDataTest
             Ingredient ing1 = new Ingredient("Salat", 10.00); //Creates object
             int insertedId = _ingredientAccess.CreateIngredient(ing1); // Inserts object to Database
 
-            // Modify the Lane object
+            // Modify the Ingredient object
             Ingredient updatedIng = new Ingredient(insertedId, "karl", 10);
 
             // Act
             bool isUpdated = _ingredientAccess.UpdateIngredientById(updatedIng);
 
-            // Retrieve the updated Lane from the database
+            // Retrieve the updated Ingredient from the database
             Ingredient retrivedIng = _ingredientAccess.GetIngredientById(insertedId);
 
             // Assert
