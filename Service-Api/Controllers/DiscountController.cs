@@ -2,7 +2,7 @@
 
 namespace Service_Api.Controllers
 {
-    public class Test : Controller
+    public class DiscountController : Controller
     {
         public IActionResult Index()
         {
