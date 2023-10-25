@@ -9,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddScoped<ICustomerGroup, CustomerGroupDatabaseAccess>();
 builder.Services.AddScoped<ICustomerGroupData, CustomerGroupDataControl>();
+builder.Services.AddScoped<IDiscount, DiscountDatabaseAccess>();
+builder.Services.AddScoped<IDiscountData, DiscountDataControl>();
 
 
 builder.Services.AddControllers();
