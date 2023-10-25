@@ -9,7 +9,7 @@ namespace ServiceData.DatabaseLayer.Interfaces
 {
     public interface IOrderLine
     {
-        OrderLine GetOrderLinetById(int id);
+        OrderLine GetOrderLineById(int id);
         List<OrderLine> GetAllOrderLines();
         int CreateOrderLine(OrderLine aOrderLine);
         bool DeleteOrderLineById(int id);

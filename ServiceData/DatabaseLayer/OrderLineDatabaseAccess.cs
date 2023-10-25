@@ -91,7 +91,7 @@ namespace ServiceData.DatabaseLayer
             return foundOrderLines;
         }
 
-        public OrderLine GetOrderLinetById(int id)
+        public OrderLine GetOrderLineById(int id)
         {
             OrderLine foundOrderLine;
             //

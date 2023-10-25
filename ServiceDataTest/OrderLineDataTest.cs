@@ -39,42 +39,43 @@ namespace ServiceDataTest
             //Cleanup
             _orderLineAccess.DeleteOrderLineById(insertedId); //Deletes as cleanup
         }
-        /*
+        
         [Fact]
         public void TestDeleteProductById()
         {
             // Arrange
-            Orders order1 = new Orders(1, DateTime.Now, 20.00, 1);
-            int insertedId = _ordersAccess.CreateOrder(order1); //Creates object and inserts into database and returns ID
+            OrderLine orderLine1 = new OrderLine(100, 1, 6);
+            int insertedId = _orderLineAccess.CreateOrderLine(orderLine1); //Creates object and inserts into database and returns ID
 
             // Act
-            bool isDeleted = _ordersAccess.DeleteOrderById(insertedId);//Deletes object
+            bool isDeleted = _orderLineAccess.DeleteOrderLineById(insertedId);//Deletes object
 
             // Assert
             Assert.True(isDeleted); //Asserts true if object is deleted.
 
             //Cleanup
-            _ordersAccess.DeleteOrderById(insertedId); //Deletes as cleanup
+            _orderLineAccess.DeleteOrderLineById(insertedId); //Deletes as cleanup
 
         }
+        
         [Fact]
-        public void TestGetAllProducts()
+        public void TestGetAllOrderLines()
         {
             // Arrange
-            Orders order1 = new Orders(1, DateTime.Now, 20.00, 1); //creates object
-            int insertedId = _ordersAccess.CreateOrder(order1);  // Inserts object to Database
+            OrderLine orderLine1 = new OrderLine(100, 1, 6); //creates object
+            int insertedId = _orderLineAccess.CreateOrderLine(orderLine1);  // Inserts object to Database
 
             // Act
-            List<Orders> readOrders = _ordersAccess.GetAllOrders();
-            bool productsWereRead = (readOrders.Count > 0);
+            List<OrderLine> readOrderLine = _orderLineAccess.GetAllOrderLines();
+            bool orderLinesWereRead = (readOrderLine.Count > 0);
             // Print additional output
-            _extraOutput.WriteLine("Number of orders: " + readOrders.Count);
+            _extraOutput.WriteLine("Number of orders: " + readOrderLine.Count);
 
             // Assert
-            Assert.True(productsWereRead);
+            Assert.True(orderLinesWereRead);
 
             // Cleanup
-            _ordersAccess.DeleteOrderById(insertedId);
+            _orderLineAccess.DeleteOrderLineById(insertedId);
         }
         
         
@@ -82,28 +83,28 @@ namespace ServiceDataTest
         public void TestUpdateProduct()
         {
             // Arrange
-            Orders order1 = new Orders(1, DateTime.Now, 20.00, 1); //creates object
-            int insertedId = _ordersAccess.CreateOrder(order1); // Inserts object to Database
+            OrderLine orderLine1 = new OrderLine(100, 1, 6); //creates object
+            int insertedId = _orderLineAccess.CreateOrderLine(orderLine1);  // Inserts object to Database
 
             // Modify the Lane object
-            Orders updatedOrder = new Orders(insertedId, DateTime.Now, 40, 1);
+            OrderLine updatedOrderLine = new OrderLine(insertedId, 120, 2, 1);
 
             // Act
-            bool isUpdated = _ordersAccess.UpdateOrderById(updatedOrder);
+            bool isUpdated = _orderLineAccess.UpdateOrderLineById(updatedOrderLine);
 
             // Retrieve the updated prod from the database
-            Orders retrievedOrder = _ordersAccess.GetOrderById(insertedId);
+            OrderLine retrievedOrderLine = _orderLineAccess.GetOrderLineById(insertedId);
 
             // Assert
             Assert.True(isUpdated); //Assert true if update went through
-            Assert.NotNull(retrievedOrder); //Asserts true of the retrieved object is not null
-            Assert.Equal(insertedId, retrievedOrder.Id); //Asserts true if insertedID and retrivedId is the same
-            Assert.Equal(40, retrievedOrder.TotalPrice); //Asserts true if retrived parameter equals given parameter, 40 in this case. 
+            Assert.NotNull(retrievedOrderLine); //Asserts true of the retrieved object is not null
+            Assert.Equal(insertedId, retrievedOrderLine.Id); //Asserts true if insertedID and retrivedId is the same
+            Assert.Equal(120, retrievedOrderLine.OrderlinePrice); //Asserts true if retrived parameter equals given parameter, 40 in this case. 
 
             //Cleanup
-            _ordersAccess.DeleteOrderById(insertedId);
+            _orderLineAccess.DeleteOrderLineById(insertedId);
         }
-        */
+        
         
     }
 }
