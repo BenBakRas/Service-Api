@@ -11,6 +11,7 @@ builder.Services.AddScoped<ICustomerGroup, CustomerGroupDatabaseAccess>();
 builder.Services.AddScoped<ICustomerGroupData, CustomerGroupDataControl>();
 builder.Services.AddScoped<IDiscount, DiscountDatabaseAccess>();
 builder.Services.AddScoped<IDiscountData, DiscountDataControl>();
+builder.Services.AddScoped<IProductData,  ProductDataControl>();
 
 
 builder.Services.AddControllers();

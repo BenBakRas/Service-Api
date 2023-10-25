@@ -10,7 +10,7 @@ using log4net;
 using System.Reflection;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/Products")]
 public class ProductController : ControllerBase
 {
     private readonly IProductData _productData;
