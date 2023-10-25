@@ -13,6 +13,9 @@ builder.Services.AddScoped<IDiscount, DiscountDatabaseAccess>();
 builder.Services.AddScoped<IDiscountData, DiscountDataControl>();
 builder.Services.AddScoped<IProduct, ProductDatabaseAccess>();
 builder.Services.AddScoped<IProductData,  ProductDataControl>();
+builder.Services.AddScoped<IShop, ShopDatabaseAccess>();
+builder.Services.AddScoped<IShopData, ShopDataControl>();
+
 
 
 builder.Services.AddControllers();

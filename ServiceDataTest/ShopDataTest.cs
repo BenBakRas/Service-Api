@@ -16,7 +16,6 @@ namespace ServiceDataTest
         private readonly ITestOutputHelper _extraOutput;
         private readonly IShop _shopAccess;
 
-        //readonly string _connectionString = "Server=localhost; Integrated Security=true; Database=x";
         private readonly string _connectionString = "Server=Magnus-PC\\SQLEXPRESS; Integrated Security = true; Database=ServiceDB";
 
         public ShopDataTest(ITestOutputHelper output)
@@ -26,86 +25,86 @@ namespace ServiceDataTest
         }
 
         [Fact]
-        public void TestCreateShop()
+        public async Task TestCreateShop()
         {
             // Arrange
             Shop shop = new Shop("JensensBøfhus", "Bedehuset", Shop._Type.Restuarant);
 
             // Act
-            int insertedId = _shopAccess.CreateShop(shop);
+            int insertedId = await _shopAccess.CreateShop(shop);
 
             // Assert
             Assert.True(insertedId > 0);
 
             // Cleanup
-            _shopAccess.DeleteShopById(insertedId);
+            await _shopAccess.DeleteShopById(insertedId);
         }
 
         [Fact]
-        public void TestDeleteShopById()
+        public async Task TestDeleteShopById()
         {
             // Arrange
             Shop shop = new Shop("ShopName", "ShopLocation", Shop._Type.Restuarant);
-            int insertedId = _shopAccess.CreateShop(shop);
+            int insertedId = await _shopAccess.CreateShop(shop);
 
             // Act
-            bool isDeleted = _shopAccess.DeleteShopById(insertedId);
+            bool isDeleted = await _shopAccess.DeleteShopById(insertedId);
 
             // Assert
             Assert.True(isDeleted);
         }
 
         [Fact]
-        public void TestGetAllShops()
+        public async Task TestGetAllShops()
         {
             // Arrange
             Shop shop = new Shop("ShopName", "ShopLocation", Shop._Type.Restuarant);
-            int insertedId = _shopAccess.CreateShop(shop);
+            int insertedId = await _shopAccess.CreateShop(shop);
 
             // Act
-            List<Shop> readShops = _shopAccess.GetAllShops();
+            List<Shop> readShops = await _shopAccess.GetAllShops();
             bool shopsWereRead = (readShops.Count > 0);
 
             // Assert
             Assert.True(shopsWereRead);
 
             // Cleanup
-            _shopAccess.DeleteShopById(insertedId);
+            await _shopAccess.DeleteShopById(insertedId);
         }
 
         [Fact]
-        public void TestGetShopById()
+        public async Task TestGetShopById()
         {
             // Arrange
             Shop shop = new Shop("ShopName", "ShopLocation", Shop._Type.Restuarant);
-            int insertedId = _shopAccess.CreateShop(shop);
+            int insertedId = await _shopAccess.CreateShop(shop);
 
             // Act
-            Shop retrievedShop = _shopAccess.GetShopById(insertedId);
+            Shop retrievedShop = await _shopAccess.GetShopById(insertedId);
 
             // Assert
             Assert.NotNull(retrievedShop);
             Assert.Equal(shop.Name, retrievedShop.Name);
 
             // Cleanup
-            _shopAccess.DeleteShopById(insertedId);
+            await _shopAccess.DeleteShopById(insertedId);
         }
 
         [Fact]
-        public void TestUpdateShopById()
+        public async Task TestUpdateShopById()
         {
             // Arrange
             Shop shop = new Shop("ShopName", "ShopLocation", Shop._Type.Restuarant);
-            int insertedId = _shopAccess.CreateShop(shop);
+            int insertedId = await _shopAccess.CreateShop(shop);
 
             // Modify the shop
             Shop updatedShop = new Shop(insertedId, "UpdatedShopName", "UpdatedShopLocation", Shop._Type.FoodStand);
 
             // Act
-            bool isUpdated = _shopAccess.UpdateShopById(updatedShop);
+            bool isUpdated = await _shopAccess.UpdateShopById(updatedShop);
 
             // Retrieve the updated shop from the database
-            Shop retrievedShop = _shopAccess.GetShopById(insertedId);
+            Shop retrievedShop = await _shopAccess.GetShopById(insertedId);
 
             // Assert
             Assert.True(isUpdated);
@@ -114,7 +113,7 @@ namespace ServiceDataTest
             Assert.Equal(updatedShop.Type, retrievedShop.Type);
 
             // Cleanup
-            _shopAccess.DeleteShopById(insertedId);
+            await _shopAccess.DeleteShopById(insertedId);
         }
     }
 }
