@@ -1,80 +1,62 @@
-﻿using ServiceData.ModelLayer;
-using System.Data.SqlClient;
+﻿using ServiceData.DatabaseLayer.Interfaces;
+using ServiceData.ModelLayer;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-using System.Numerics;
-using System.Data;
-using ServiceData.DatabaseLayer.Interfaces;
 
 namespace ServiceData.DatabaseLayer
 {
     public class ProductDatabaseAccess : IProduct
     {
-
-        readonly string? _connectionString;
+        private readonly string? _connectionString;
 
         public ProductDatabaseAccess(IConfiguration configuration)
         {
             _connectionString = configuration.GetConnectionString("CompanyConnection");
         }
 
-            public ProductDatabaseAccess(string inConnectionString)
-            {
-                _connectionString = inConnectionString;
-            }
+        public ProductDatabaseAccess(string inConnectionString)
+        {
+            _connectionString = inConnectionString;
+        }
 
-        public int CreateProduct(Product product)
+        public async Task<int> CreateProduct(Product product)
         {
             int insertedId = -1;
-            //SQL string
             string insertString = "INSERT INTO Product(ProductNumber, Description, BasePrice, Barcode, Category, ProductGroupID) " +
                 "OUTPUT INSERTED.ID values(@Productnumber, @Description, @BasePrice, @Barcode, @Category, @ProductGroupID)";
+
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand CreateCommand = new SqlCommand(insertString, con))
             {
-                //Preparing and adding parameters
-                SqlParameter productNumberParam = new("@Productnumber", product.ProductNumber);
-                CreateCommand.Parameters.Add(productNumberParam);
+                CreateCommand.Parameters.AddWithValue("@Productnumber", product.ProductNumber);
+                CreateCommand.Parameters.AddWithValue("@Description", product.Description);
+                CreateCommand.Parameters.AddWithValue("@BasePrice", product.BasePrice);
+                CreateCommand.Parameters.AddWithValue("@Barcode", product.Barcode);
+                CreateCommand.Parameters.AddWithValue("@Category", product.Category);
+                CreateCommand.Parameters.AddWithValue("@ProductGroupID", product.ProductGroup);
 
-                SqlParameter productDescriptionParam = new("@Description", product.Description);
-                CreateCommand.Parameters.Add(productDescriptionParam);
-
-                SqlParameter productPriceParam = new("@BasePrice", product.BasePrice);
-                CreateCommand.Parameters.Add(productPriceParam);
-
-                SqlParameter productBarcodeParam = new("@Barcode", product.Barcode);
-                CreateCommand.Parameters.Add(productBarcodeParam);
-
-                SqlParameter productCategoryParam = new("@Category", product.Category);
-                CreateCommand.Parameters.Add(productCategoryParam);
-
-                SqlParameter productProdGroup = new("@ProductGroupID", product.ProductGroup);
-                CreateCommand.Parameters.Add(productProdGroup);
-
-                con.Open();
-                // Execute save and read generated key(ID)
-                insertedId = (int)CreateCommand.ExecuteScalar();
+                await con.OpenAsync();
+                insertedId = (int)await CreateCommand.ExecuteScalarAsync();
             }
-            // Return true or false
+
             return insertedId;
         }
 
-        public bool DeleteProductById(int id)
+        public async Task<bool> DeleteProductById(int id)
         {
             bool isDeleted = false;
-            //
             string deleteString = "DELETE FROM Product WHERE Id = @Id";
+
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand deleteCommand = new SqlCommand(deleteString, con))
             {
                 deleteCommand.Parameters.AddWithValue("@Id", id);
 
-                con.Open();
-                int rowsAffected = deleteCommand.ExecuteNonQuery();
+                await con.OpenAsync();
+                int rowsAffected = await deleteCommand.ExecuteNonQueryAsync();
 
                 isDeleted = (rowsAffected > 0);
             }
@@ -82,59 +64,57 @@ namespace ServiceData.DatabaseLayer
             return isDeleted;
         }
 
-        public List<Product> GetAllProducts()
+        public async Task<List<Product>> GetAllProducts()
         {
-            List<Product> foundProducts;
-            Product readProduct;
-            //Query
+            List<Product> foundProducts = new List<Product>();
             string queryString = "SELECT * FROM Product";
+
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand readCommand = new SqlCommand(queryString, con))
             {
-                con.Open();
-                // Execute read
-                SqlDataReader productReader = readCommand.ExecuteReader();
-                // Collect data
-                foundProducts = new List<Product>();
-                while (productReader.Read())
+                await con.OpenAsync();
+                using (SqlDataReader productReader = await readCommand.ExecuteReaderAsync())
                 {
-                    readProduct = GetProductFromReader(productReader);
-                    foundProducts.Add(readProduct);
+                    while (await productReader.ReadAsync())
+                    {
+                        Product readProduct = GetProductFromReader(productReader);
+                        foundProducts.Add(readProduct);
+                    }
                 }
             }
+
             return foundProducts;
         }
 
-
-        public Product GetProductById(int id)
+        public async Task<Product> GetProductById(int id)
         {
-            Product foundProduct;
-            //
+            Product foundProduct = null;
             string queryString = "SELECT * FROM Product WHERE Id = @Id";
+
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand readCommand = new SqlCommand(queryString, con))
             {
-                //Prepare SQL
-                SqlParameter idParam = new SqlParameter("@Id", id);
-                readCommand.Parameters.Add(idParam);
-                //
-                con.Open();
-                //Execute reead
-                SqlDataReader productReader = readCommand.ExecuteReader();
-                foundProduct = new Product();
-                while (productReader.Read())
+                readCommand.Parameters.AddWithValue("@Id", id);
+
+                await con.OpenAsync();
+
+                using (SqlDataReader productReader = await readCommand.ExecuteReaderAsync())
                 {
-                    foundProduct = GetProductFromReader(productReader);
+                    while (await productReader.ReadAsync())
+                    {
+                        foundProduct = GetProductFromReader(productReader);
+                    }
                 }
             }
+
             return foundProduct;
         }
 
-        public bool UpdateProductById(Product productToUpdate)
+        public async Task<bool> UpdateProductById(Product productToUpdate)
         {
             bool isUpdated = false;
             string updateString = "UPDATE Product SET ProductNumber = @ProductNumber, Description = @Description, BasePrice = @BasePrice, " +
-                "Barcode = @Barcode, Category = @Category, ProductGroupID = @ProductGroupID";
+                "Barcode = @Barcode, Category = @Category, ProductGroupID = @ProductGroupID WHERE Id = @Id";
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand updateCommand = new SqlCommand(updateString, con))
@@ -145,19 +125,15 @@ namespace ServiceData.DatabaseLayer
                 updateCommand.Parameters.AddWithValue("@Barcode", productToUpdate.Barcode);
                 updateCommand.Parameters.AddWithValue("@Category", productToUpdate.Category);
                 updateCommand.Parameters.AddWithValue("@ProductGroupID", productToUpdate.ProductGroup);
+                updateCommand.Parameters.AddWithValue("@Id", productToUpdate.Id);
 
-                con.Open();
-                int rowsAffected = updateCommand.ExecuteNonQuery();
+                await con.OpenAsync();
+                int rowsAffected = await updateCommand.ExecuteNonQueryAsync();
 
-                if (isUpdated = (rowsAffected > 0))
-                {
-                    return isUpdated;
-                }
-                else
-                {
-                    return false;
-                }
+                isUpdated = rowsAffected > 0;
             }
+
+            return isUpdated;
         }
 
 
