@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xunit;
 using Xunit.Abstractions;
 using ServiceData.DatabaseLayer;
 using ServiceData.ModelLayer;
@@ -22,83 +22,83 @@ namespace ServiceDataTest
             _extraOutput = output;
             _productAccess = new ProductDatabaseAccess(_connectionString);
         }
+
         [Fact]
-        public void TestCreateProduct()
-        {
-            //Arrange
-            Product prod1 = new Product("12", "Hamburger", 50, 212141, Product._Category.Burgere, 1); //creates object
-
-            //Act
-            int insertedId = _productAccess.CreateProduct(prod1); //Creates object and inserts into database and returns ID
-
-            //Assert
-            Assert.True(insertedId > 0); //Asserts true if an Id was returned
-
-            //Cleanup
-            _productAccess.DeleteProductById(insertedId); //Deletes as cleanup
-        }
-        [Fact]
-        public void TestDeleteProductById()
+        public async Task TestCreateProduct()
         {
             // Arrange
-            Product prod1 = new Product("1", "Hamburger", 50, 212141, Product._Category.Burgere, 1); //creates object
-            int insertedId = _productAccess.CreateProduct(prod1); // Inserts object to Database
+            Product prod1 = new Product("12", "Hamburger", 50, 212141, Product._Category.Burgere, 1);
 
             // Act
-            bool isDeleted = _productAccess.DeleteProductById(insertedId);//Deletes object
+            int insertedId = await _productAccess.CreateProduct(prod1);
 
             // Assert
-            Assert.True(isDeleted); //Asserts true if object is deleted.
+            Assert.True(insertedId > 0);
 
-            //Cleanup
-            _productAccess.DeleteProductById(insertedId); //Deletes as cleanup
-
+            // Cleanup
+            await _productAccess.DeleteProductById(insertedId);
         }
+
         [Fact]
-        public void TestGetAllProducts()
+        public async Task TestDeleteProductById()
         {
             // Arrange
-            Product prod1 = new Product("1", "Hamburger", 50, 212141, Product._Category.Burgere, 1); //creates object
-            int insertedId = _productAccess.CreateProduct(prod1); // Inserts object to Database
+            Product prod1 = new Product("1", "Hamburger", 50, 212141, Product._Category.Burgere, 1);
+            int insertedId = await _productAccess.CreateProduct(prod1);
 
             // Act
-            List<Product> readProducts = _productAccess.GetAllProducts();
+            bool isDeleted = await _productAccess.DeleteProductById(insertedId);
+
+            // Assert
+            Assert.True(isDeleted);
+
+            // Cleanup
+            await _productAccess.DeleteProductById(insertedId);
+        }
+
+        [Fact]
+        public async Task TestGetAllProducts()
+        {
+            // Arrange
+            Product prod1 = new Product("1", "Hamburger", 50, 212141, Product._Category.Burgere, 1);
+            int insertedId = await _productAccess.CreateProduct(prod1);
+
+            // Act
+            List<Product> readProducts = await _productAccess.GetAllProducts();
             bool productsWereRead = (readProducts.Count > 0);
-            // Print additional output
             _extraOutput.WriteLine("Number of Products: " + readProducts.Count);
 
             // Assert
             Assert.True(productsWereRead);
 
             // Cleanup
-            _productAccess.DeleteProductById(insertedId);
+            await _productAccess.DeleteProductById(insertedId);
         }
-        
-        
+
         [Fact]
-        public void TestUpdateProduct()
+        public async Task TestUpdateProduct()
         {
             // Arrange
-            Product prod1 = new Product("1", "Hamburger", 50, 212141, Product._Category.Burgere, 1); //creates object
-            int insertedId = _productAccess.CreateProduct(prod1); // Inserts object to Database
+            Product prod1 = new Product("1", "Hamburger", 50, 212141, Product._Category.Burgere, 1);
+            int insertedId = await _productAccess.CreateProduct(prod1);
 
             // Modify the Lane object
             Product updatedProd = new Product(insertedId, "2", "Pomfritter", 60, 212112, Product._Category.Sides, 1);
 
             // Act
-            bool isUpdated = _productAccess.UpdateProductById(updatedProd);
+            bool isUpdated = await _productAccess.UpdateProductById(updatedProd);
 
             // Retrieve the updated prod from the database
-            Product retrievedProd = _productAccess.GetProductById(insertedId);
+            Product retrievedProd = await _productAccess.GetProductById(insertedId);
 
             // Assert
-            Assert.True(isUpdated); //Assert true if update went through
-            Assert.NotNull(retrievedProd); //Asserts true of the retrieved object is not null
-            Assert.Equal(insertedId, retrievedProd.Id); //Asserts true if insertedID and retrivedId is the same
-            Assert.Equal(retrievedProd.BasePrice, 60); //Asserts true if retrived parameter equals given parameter, 10 in this case. 
+            Assert.True(isUpdated);
+            Assert.NotNull(retrievedProd);
+            Assert.Equal(insertedId, retrievedProd.Id);
+            Assert.Equal(retrievedProd.BasePrice, 60);
 
-            //Cleanup
-            _productAccess.DeleteProductById(insertedId);
+            // Cleanup
+            await _productAccess.DeleteProductById(insertedId);
         }
     }
 }

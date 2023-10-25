@@ -34,6 +34,7 @@ namespace Service_Api.BusinessLogicLayer
         public async Task<int> CreateShop(ShopDto shopDto)
         {
             var shop = _mapper.Map<Shop>(shopDto);
+           
             return await _shopDatabaseAccess.CreateShop(shop);
         }
 

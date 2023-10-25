@@ -147,7 +147,7 @@ namespace ServiceData.DatabaseLayer
             tempName = shopsReader.GetString(shopsReader.GetOrdinal("Name"));
             tempLocation = shopsReader.GetString(shopsReader.GetOrdinal("Location"));
             tempType = shopsReader.GetString(shopsReader.GetOrdinal("Type"));
-            tempEnum = Enum.TryParse(tempType, out Shop._Type enumType);
+            tempEnum = Enum.TryParse(tempType, out Shop.Storetype enumType);
 
             foundshop = new Shop(tempId, tempName, tempLocation, enumType);
 

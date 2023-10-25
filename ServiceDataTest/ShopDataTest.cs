@@ -28,7 +28,7 @@ namespace ServiceDataTest
         public async Task TestCreateShop()
         {
             // Arrange
-            Shop shop = new Shop("JensensBøfhus", "Bedehuset", Shop._Type.Restuarant);
+            Shop shop = new Shop("JensensBøfhus", "Bedehuset", Shop.Storetype.Restaurant);
 
             // Act
             int insertedId = await _shopAccess.CreateShop(shop);
@@ -44,7 +44,7 @@ namespace ServiceDataTest
         public async Task TestDeleteShopById()
         {
             // Arrange
-            Shop shop = new Shop("ShopName", "ShopLocation", Shop._Type.Restuarant);
+            Shop shop = new Shop("JensensBøfhus", "Bedehuset", Shop.Storetype.Restaurant);
             int insertedId = await _shopAccess.CreateShop(shop);
 
             // Act
@@ -58,7 +58,7 @@ namespace ServiceDataTest
         public async Task TestGetAllShops()
         {
             // Arrange
-            Shop shop = new Shop("ShopName", "ShopLocation", Shop._Type.Restuarant);
+            Shop shop = new Shop("JensensBøfhus", "Bedehuset", Shop.Storetype.Restaurant);
             int insertedId = await _shopAccess.CreateShop(shop);
 
             // Act
@@ -76,7 +76,7 @@ namespace ServiceDataTest
         public async Task TestGetShopById()
         {
             // Arrange
-            Shop shop = new Shop("ShopName", "ShopLocation", Shop._Type.Restuarant);
+            Shop shop = new Shop("JensensBøfhus", "Bedehuset", Shop.Storetype.Restaurant);
             int insertedId = await _shopAccess.CreateShop(shop);
 
             // Act
@@ -94,11 +94,11 @@ namespace ServiceDataTest
         public async Task TestUpdateShopById()
         {
             // Arrange
-            Shop shop = new Shop("ShopName", "ShopLocation", Shop._Type.Restuarant);
+            Shop shop = new Shop("JensensBøfhus", "Bedehuset", Shop.Storetype.Restaurant);
             int insertedId = await _shopAccess.CreateShop(shop);
 
             // Modify the shop
-            Shop updatedShop = new Shop(insertedId, "UpdatedShopName", "UpdatedShopLocation", Shop._Type.FoodStand);
+            Shop updatedShop = new Shop(insertedId, "UpdatedShopName", "UpdatedShopLocation", Shop.Storetype.Restaurant);
 
             // Act
             bool isUpdated = await _shopAccess.UpdateShopById(updatedShop);
