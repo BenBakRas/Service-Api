@@ -16,6 +16,7 @@ namespace ServiceData.ModelLayer
         public enum _Category {Burgere, Salater, Sides, Dips}
         public _Category Category { get; set; }
         public int? ProductGroup { get; set; }
+        public String? Image {  get; set; }
 
         //Empty Constructor
         public Product() { }
@@ -37,6 +38,11 @@ namespace ServiceData.ModelLayer
             Id = id;
         }
 
+        // Constructor with image
+        public Product(int id, string productNumber, string description, double price, int barcode, _Category category, int productGroup, string image) : this(id, productNumber, description, price, barcode, category, productGroup)
+        {
+            Image = image;
+        }
 
     }
 }

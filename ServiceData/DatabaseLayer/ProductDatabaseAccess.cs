@@ -172,6 +172,7 @@ namespace ServiceData.DatabaseLayer
             string tempCategory;
             bool readerCategory;
             int readerProductGroup;
+            string readerImage;
 
             //Fetch values
             readerID = productReader.GetInt32(productReader.GetOrdinal("Id"));
@@ -182,10 +183,11 @@ namespace ServiceData.DatabaseLayer
             tempCategory = productReader.GetString(productReader.GetOrdinal("Category"));
             readerCategory = Enum.TryParse(tempCategory, out Product._Category categoryValue);
             readerProductGroup = productReader.GetInt32(productReader.GetOrdinal("ProductGroupID"));
-
+            readerImage = productReader.GetString(productReader.GetOrdinal("Image"));
+            
 
             //Create product object
-            foundProduct = new Product(readerID, readerProductNumber, readerDescription, readerBasePrice, readerBarcode, categoryValue, readerProductGroup);
+            foundProduct = new Product(readerID, readerProductNumber, readerDescription, readerBasePrice, readerBarcode, categoryValue, readerProductGroup, readerImage);
 
             return foundProduct;
         }
