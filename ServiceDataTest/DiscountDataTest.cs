@@ -2,9 +2,8 @@
 using ServiceData.DatabaseLayer;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Xunit;
 using Xunit.Abstractions;
 using ServiceData.ModelLayer;
 
@@ -12,11 +11,9 @@ namespace ServiceDataTest
 {
     public class DiscountDataTest
     {
-
         private readonly ITestOutputHelper _extraOutput;
         readonly private IDiscount _discount;
 
-        //readonly string _connectionString = "Server=Magnus-PC\\SQLEXPRESS; Integrated Security=true; Database=ServiceDB";
         readonly string _connectionString = "Server=localhost; Integrated Security=true; Database=x";
 
         public DiscountDataTest(ITestOutputHelper output)
@@ -24,83 +21,84 @@ namespace ServiceDataTest
             _extraOutput = output;
             _discount = new DiscountDatabaseAccess(_connectionString);
         }
+
         [Fact]
-        public void TestCreateDiscount()
-        {
-            //Arrange
-            Discount disc = new Discount(12, 1, 2); // Creates object
-
-            //Act
-            int insertedId = _discount.CreateDiscount(disc); //Inserts object into database and returns ID
-
-            //Assert
-            Assert.True(insertedId > 0); //Asserts true if an Id was returned
-
-            //Cleanup
-            _discount.DeleteDiscountById(insertedId);//Deletes as cleanup
-        }
-        [Fact]
-        public void TestDeleteDiscountById()
+        public async Task TestCreateDiscount()
         {
             // Arrange
             Discount disc = new Discount(12, 1, 2); // Creates object
-            int insertedId = _discount.CreateDiscount(disc); //Inserts object into database and returns ID
 
             // Act
-            bool isDeleted = _discount.DeleteDiscountById(insertedId); //Deletes object
+            int insertedId = await _discount.CreateDiscount(disc); // Inserts object into the database and returns ID
 
             // Assert
-            Assert.True(isDeleted); //Asserts true if object is deleted.
+            Assert.True(insertedId > 0); // Asserts true if an ID was returned
 
+            // Cleanup
+            bool isDeleted = await _discount.DeleteDiscountById(insertedId); // Deletes as cleanup
+            Assert.True(isDeleted); // Asserts true if the object is deleted.
         }
+
         [Fact]
-        public void TestGetAllDiscounts()
+        public async Task TestDeleteDiscountById()
         {
             // Arrange
             Discount disc = new Discount(12, 1, 2); // Creates object
-            int insertedId = _discount.CreateDiscount(disc); //Inserts object into database and returns ID
+            int insertedId = await _discount.CreateDiscount(disc); // Inserts object into the database and returns ID
 
             // Act
-            List<Discount> readDiscounts = _discount.GetAllDiscount();
-            bool IngredientsWereRead = (readDiscounts.Count > 0);
+            bool isDeleted = await _discount.DeleteDiscountById(insertedId); // Deletes object
+
+            // Assert
+            Assert.True(isDeleted); // Asserts true if the object is deleted.
+        }
+
+        [Fact]
+        public async Task TestGetAllDiscounts()
+        {
+            // Arrange
+            Discount disc = new Discount(12, 1, 2); // Creates object
+            int insertedId = await _discount.CreateDiscount(disc); // Inserts object into the database and returns ID
+
+            // Act
+            List<Discount> readDiscounts = await _discount.GetAllDiscount();
+            bool DiscountsWereRead = (readDiscounts.Count > 0);
+
             // Print additional output
-            _extraOutput.WriteLine("Number of Ingredients: " + readDiscounts.Count);
+            _extraOutput.WriteLine("Number of Discounts: " + readDiscounts.Count);
 
             // Assert
-            Assert.True(IngredientsWereRead);
+            Assert.True(DiscountsWereRead);
 
-            //Cleanup
-            bool isDeleted = _discount.DeleteDiscountById(insertedId); //Deletes object
-            Assert.True(isDeleted); //Asserts true if object is deleted.
-
+            // Cleanup
+            bool isDeleted = await _discount.DeleteDiscountById(insertedId); // Deletes object
+            Assert.True(isDeleted); // Asserts true if the object is deleted.
         }
+
         [Fact]
-        public void TestUpdateDiscount()
+        public async Task TestUpdateDiscount()
         {
             // Arrange
             Discount disc = new Discount(12, 1, 2); // Creates object
-            int insertedId = _discount.CreateDiscount(disc); //Inserts object into database and returns ID
+            int insertedId = await _discount.CreateDiscount(disc); // Inserts object into the database and returns ID
 
             // Modify the discount object
-
             Discount updateDiscount = new Discount(insertedId, 13, 1, 2);
 
             // Act
-            bool isUpdated = _discount.UpdateDiscountById(updateDiscount);
+            bool isUpdated = await _discount.UpdateDiscountById(updateDiscount);
 
             // Retrieve the updated discount from the database
-            Discount retrivedDiscount = _discount.GetDiscountById(insertedId);
+            Discount retrievedDiscount = await _discount.GetDiscountById(insertedId);
 
             // Assert
-            Assert.True(isUpdated); //Assert true if update went through
-            Assert.NotNull(retrivedDiscount); //Asserts true of the retrieved object is not null
-            Assert.Equal(insertedId, retrivedDiscount.Id); //Asserts true if insertedID and retrivedId is the same
+            Assert.True(isUpdated); // Assert true if the update went through
+            Assert.NotNull(retrievedDiscount); // Asserts true if the retrieved object is not null
+            Assert.Equal(insertedId, retrievedDiscount.Id); // Asserts true if insertedID and retrievedId are the same
 
-            //Cleanup
-            bool isDeleted = _discount.DeleteDiscountById(insertedId); //Deletes object
-            Assert.True(isDeleted); //Asserts true if object is deleted.
-
+            // Cleanup
+            bool isDeleted = await _discount.DeleteDiscountById(insertedId); // Deletes the object
+            Assert.True(isDeleted); // Asserts true if the object is deleted.
         }
-
     }
 }

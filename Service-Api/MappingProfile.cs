@@ -8,8 +8,15 @@ namespace Service_Api
     {
         public MappingProfile()
         {
+            //CustoemrGroup
             CreateMap<CustomerGroup, CustomerGroupDto>(); // Configure the mapping
-            CreateMap<CustomerGroupDto, CustomerGroup>(); // Optionally, configure reverse mapping
+            CreateMap<CustomerGroupDto, CustomerGroup>(); // Configure reverse mapping
+
+
+            //Discount
+            CreateMap<Discount, DiscountDto>(); // Configure the mapping
+            CreateMap<DiscountDto, Discount>(); // bConfigure reverse mapping
+
         }
 
     }
