@@ -12,14 +12,14 @@ namespace ServiceData.ModelLayer
         public int Id { get; set; }
         public string Name { get; set; }
         public string Location { get; set; }
-        public enum _Type {Restuarant, FoodStand, CandyStore }
-        public _Type Type { get; set; }
+        public enum Storetype { Restaurant, FoodStand, CandyStore }
+        public Storetype Type { get; set; }
 
         //Empty Constructor
         public Shop() { }
 
         //Constructor with parameters
-        public Shop(string name, string location, _Type type)
+        public Shop(string name, string location, Storetype type)
         {
             Name = name;
             Location = location;
@@ -27,7 +27,7 @@ namespace ServiceData.ModelLayer
         }
 
         //Reuses constructor with Id
-        public Shop(int id, string name, string location, _Type type) : this(name, location, type)
+        public Shop(int id, string name, string location, Storetype type) : this(name, location, type)
         {
             Id = id;
         }
