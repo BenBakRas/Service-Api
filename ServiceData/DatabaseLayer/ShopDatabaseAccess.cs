@@ -3,7 +3,6 @@ using ServiceData.DatabaseLayer.Interfaces;
 using ServiceData.ModelLayer;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -13,7 +12,6 @@ namespace ServiceData.DatabaseLayer
 {
     public class ShopDatabaseAccess : IShop
     {
-
         readonly string? _connectionString;
 
         public ShopDatabaseAccess(IConfiguration configuration)
@@ -21,17 +19,16 @@ namespace ServiceData.DatabaseLayer
             _connectionString = configuration.GetConnectionString("Companyconnection");
         }
 
-        public ShopDatabaseAccess(string inConnectionString) 
-        { 
+        public ShopDatabaseAccess(string inConnectionString)
+        {
             _connectionString = inConnectionString;
-        
         }
 
-        public int CreateShop(Shop anShop)
+        public async Task<int> CreateShop(Shop anShop)
         {
             int insertedId = -1;
-            //
             string insertString = "insert into Shop(Name, Location, Type) OUTPUT INSERTED.ID values(@Name, @Location, @Type)";
+
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand CreateCommand = new SqlCommand(insertString, con))
             {
@@ -41,27 +38,28 @@ namespace ServiceData.DatabaseLayer
                 SqlParameter aLocationParam = new("@Location", anShop.Location);
                 CreateCommand.Parameters.Add(aLocationParam);
 
-                SqlParameter aTypeParam = new("@Type", anShop.Type);
+                SqlParameter aTypeParam = new("@Type", anShop.Type.ToString());
                 CreateCommand.Parameters.Add(aTypeParam);
+
                 con.Open();
-                // Execute save and read generated key (ID)
-                insertedId = (int)CreateCommand.ExecuteScalar();
+                insertedId = (int)await CreateCommand.ExecuteScalarAsync();
             }
+
             return insertedId;
         }
 
-        public bool DeleteShopById(int id)
+        public async Task<bool> DeleteShopById(int id)
         {
             bool isDeleted = false;
-            //
             string deleteString = "DELETE FROM Shop WHERE Id = @Id";
+
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand deleteCommand = new SqlCommand(deleteString, con))
             {
                 deleteCommand.Parameters.AddWithValue("@Id", id);
 
                 con.Open();
-                int rowsAffected = deleteCommand.ExecuteNonQuery();
+                int rowsAffected = await deleteCommand.ExecuteNonQueryAsync();
 
                 isDeleted = (rowsAffected > 0);
             }
@@ -69,54 +67,53 @@ namespace ServiceData.DatabaseLayer
             return isDeleted;
         }
 
-        public List<Shop> GetAllShops()
+        public async Task<List<Shop>> GetAllShops()
         {
-            List<Shop> foundShops;
-            Shop readShop;
-            //
+            List<Shop> foundShops = new List<Shop>();
+
             string queryString = "SELECT Id, name, location, type FROM Shop";
+
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand readCommand = new SqlCommand(queryString, con))
             {
                 con.Open();
-                // Execute read
-                SqlDataReader shopsReader = readCommand.ExecuteReader();
-                // Collect data
-                foundShops = new List<Shop>();
-                while (shopsReader.Read())
+                SqlDataReader shopsReader = await readCommand.ExecuteReaderAsync();
+
+                while (await shopsReader.ReadAsync())
                 {
-                    readShop = GetShopFromReader(shopsReader);
+                    Shop readShop = GetShopFromReader(shopsReader);
                     foundShops.Add(readShop);
                 }
             }
+
             return foundShops;
         }
 
-        public Shop GetShopById(int id)
+        public async Task<Shop> GetShopById(int id)
         {
             Shop foundShop;
-            //
             string queryString = "select Id, name, location, type from Shop where id = @Id";
+
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand readCommand = new SqlCommand(queryString, con))
             {
-                //Prepare SQL
                 SqlParameter idParam = new SqlParameter("@Id", id);
                 readCommand.Parameters.Add(idParam);
-                //
+
                 con.Open();
-                //Execute reead
-                SqlDataReader shopsReader = readCommand.ExecuteReader();
+                SqlDataReader shopsReader = await readCommand.ExecuteReaderAsync();
                 foundShop = new Shop();
-                while (shopsReader.Read())
+
+                while (await shopsReader.ReadAsync())
                 {
                     foundShop = GetShopFromReader(shopsReader);
                 }
             }
+
             return foundShop;
         }
 
-        public bool UpdateShopById(Shop ShopToUpdate)
+        public async Task<bool> UpdateShopById(Shop ShopToUpdate)
         {
             bool isUpdated = false;
             string updateString = "UPDATE Shop SET name = @Name, location = @Location, type = @Type WHERE Id = @Id";
@@ -127,20 +124,15 @@ namespace ServiceData.DatabaseLayer
                 updateCommand.Parameters.AddWithValue("@Id", ShopToUpdate.Id);
                 updateCommand.Parameters.AddWithValue("@Name", ShopToUpdate.Name);
                 updateCommand.Parameters.AddWithValue("@Location", ShopToUpdate.Location);
-                updateCommand.Parameters.AddWithValue("@Type", ShopToUpdate.Type);
+                updateCommand.Parameters.AddWithValue("@Type", ShopToUpdate.Type.ToString());
 
                 con.Open();
-                int rowsAffected = updateCommand.ExecuteNonQuery();
+                int rowsAffected = await updateCommand.ExecuteNonQueryAsync();
 
-                if (isUpdated = (rowsAffected > 0))
-                {
-                    return isUpdated;
-                }
-                else
-                {
-                    return false;
-                }
+                isUpdated = (rowsAffected > 0);
             }
+
+            return isUpdated;
         }
 
         private Shop GetShopFromReader(SqlDataReader shopsReader)
