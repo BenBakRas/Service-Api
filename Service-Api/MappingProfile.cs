@@ -15,7 +15,11 @@ namespace Service_Api
 
             //Discount
             CreateMap<Discount, DiscountDto>(); // Configure the mapping
-            CreateMap<DiscountDto, Discount>(); // bConfigure reverse mapping
+            CreateMap<DiscountDto, Discount>(); // Configure reverse mapping
+
+            //Product
+            CreateMap<Product, ProductDto>(); // Configure the mapping
+            CreateMap<ProductDto, Product>(); // Configure reverse mapping
 
         }
 
