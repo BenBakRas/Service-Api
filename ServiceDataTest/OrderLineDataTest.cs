@@ -15,32 +15,31 @@ namespace ServiceDataTest
         private readonly ITestOutputHelper _extraOutput;
         readonly private IOrderLine _orderLineAccess;
 
-        readonly string _connectionString = "Server=Magnus-PC\\SQLEXPRESS; Integrated Security = true; Database=ServiceDB";
-        // readonly string _connectionString = "Server=localhost; Integrated Security=true; Database=x";
+        readonly string _connectionString = "Server=Magnus-PC\\SQLEXPRESS; Integrated Security = true; Database=x";
+        //readonly string _connectionString = "Server=localhost; Integrated Security=true; Database=x";
 
         public OrderLineDataTest(ITestOutputHelper output)
         {
             _extraOutput = output;
             _orderLineAccess = new OrderLineDatabaseAccess(_connectionString);
         }
-        /*
+        
         [Fact]
-        public void TestCreateOrder()
+        public void TestCreateOrderLine()
         {
             //Arrange
-            Orders order1 = new Orders(1, DateTime.Now, 20.00, 1);
-            OrderLine orderLine1 = new OrderLine(100, 2,)
+            OrderLine orderLine1 = new OrderLine(100, 1, 6);
 
             //Act
-            int insertedId = _ordersAccess.CreateOrder(order1); //Creates object and inserts into database and returns ID
+            int insertedId = _orderLineAccess.CreateOrderLine(orderLine1); //Creates object and inserts into database and returns ID
 
             //Assert
             Assert.True(insertedId > 0); //Asserts true if an Id was returned
 
             //Cleanup
-            _ordersAccess.DeleteOrderById(insertedId); //Deletes as cleanup
+            _orderLineAccess.DeleteOrderLineById(insertedId); //Deletes as cleanup
         }
-        
+        /*
         [Fact]
         public void TestDeleteProductById()
         {

@@ -27,8 +27,8 @@ namespace ServiceData.DatabaseLayer
         {
             int insertedId = -1;
             //
-            string insertString = "INSERT INTO  OrderLine(OrderLinePrice, Quantity, OrderLineGroupID, OrderID) OUTPUT INSERTED.ID " +
-                "values(@OrderLinePrice, @Quantity, @OrderLineGroupId, @OrderId)";
+            string insertString = "INSERT INTO  OrderLine(OrderLinePrice, Quantity, OrderID) OUTPUT INSERTED.ID " +
+                "values(@OrderLinePrice, @Quantity, @OrderId)";
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand CreateCommand = new SqlCommand(insertString, con))
             {
@@ -39,10 +39,7 @@ namespace ServiceData.DatabaseLayer
                 SqlParameter aOrderLineQuantity = new("Quantity", aOrderLine.Quantity);
                 CreateCommand.Parameters.Add(aOrderLineQuantity);
 
-                SqlParameter aOrderLineGroupIdParam = new("OrderLineGroupID", aOrderLine.OrderlineGroup);
-                CreateCommand.Parameters.Add(aOrderLineGroupIdParam);
-
-                SqlParameter aOrderLineOrderIdParam = new("OrderID", aOrderLine.Orders);
+                SqlParameter aOrderLineOrderIdParam = new("OrderID", aOrderLine.OrderId);
                 CreateCommand.Parameters.Add(aOrderLineOrderIdParam);
 
                 con.Open();
@@ -121,20 +118,16 @@ namespace ServiceData.DatabaseLayer
         public bool UpdateOrderLineById(OrderLine orderLineToUpdate)
         {
             bool isUpdated = false;
-            string updateString = "UPDATE OrderLine SET OrderLinePrice = @OrderLinePrice, Quantity = @Quantity, " +
-                "OrderLineGroupID = @OrderLineGroupId, OrderID = @OrderId;";
+            string updateString = "UPDATE OrderLine SET OrderLinePrice = @OrderLinePrice, Quantity = @Quantity";
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand updateCommand = new SqlCommand(updateString, con))
             {
                 updateCommand.Parameters.AddWithValue("@OrderLinePrice", orderLineToUpdate.OrderlinePrice);
                 updateCommand.Parameters.AddWithValue("@Quantity", orderLineToUpdate.Quantity);
-                updateCommand.Parameters.AddWithValue("@OrderLineGroupId", orderLineToUpdate.OrderLineGroupId);
-                updateCommand.Parameters.AddWithValue("@OrderId", orderLineToUpdate.OrderId);
-
                 con.Open();
-                int rowsAffected = updateCommand.ExecuteNonQuery();
 
+                int rowsAffected = updateCommand.ExecuteNonQuery();
                 if (isUpdated = (rowsAffected > 0))
                 {
                     return isUpdated;
@@ -152,13 +145,12 @@ namespace ServiceData.DatabaseLayer
 
             //fetch values
             int readerId = orderLineReader.GetInt32(orderLineReader.GetOrdinal("Id"));
-            double readerOrderLinePrice = orderLineReader.GetDouble(orderLineReader.GetOrdinal("OrderLinePrice"));
+            decimal readerOrderLinePrice = orderLineReader.GetDecimal(orderLineReader.GetOrdinal("OrderLinePrice"));
             int readerQuantity = orderLineReader.GetInt32(orderLineReader.GetOrdinal("Quantity"));
-            int readerOrderlineGroupId = orderLineReader.GetInt32(orderLineReader.GetOrdinal("OrderLineGroupID"));
             int readerOrderID = orderLineReader.GetInt32(orderLineReader.GetOrdinal("OrderID"));
 
             //Create orderline object
-            foundOrderLine = new OrderLine(readerId, readerOrderLinePrice, readerQuantity, readerOrderlineGroupId, readerOrderID);
+            foundOrderLine = new OrderLine(readerId, readerOrderLinePrice, readerQuantity, readerOrderID);
 
             return foundOrderLine;
         }
