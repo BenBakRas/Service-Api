@@ -143,7 +143,7 @@ namespace ServiceData.DatabaseLayer
             int readerID;
             string readerProductNumber;
             string readerDescription;
-            double readerBasePrice;
+            decimal readerBasePrice;
             int readerBarcode;
             string tempCategory;
             bool readerCategory;
@@ -155,7 +155,7 @@ namespace ServiceData.DatabaseLayer
             readerProductNumber = productReader.GetString(productReader.GetOrdinal("ProductNumber"));
             readerBarcode = productReader.GetInt32(productReader.GetOrdinal("Barcode"));
             readerDescription = productReader.GetString(productReader.GetOrdinal("Description"));
-            readerBasePrice = productReader.GetDouble(productReader.GetOrdinal("BasePrice"));
+            readerBasePrice = productReader.GetDecimal(productReader.GetOrdinal("BasePrice"));
             tempCategory = productReader.GetString(productReader.GetOrdinal("Category"));
             readerCategory = Enum.TryParse(tempCategory, out Product._Category categoryValue);
             readerProductGroup = productReader.GetInt32(productReader.GetOrdinal("ProductGroupID"));
