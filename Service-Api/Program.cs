@@ -15,8 +15,10 @@ builder.Services.AddScoped<IProduct, ProductDatabaseAccess>();
 builder.Services.AddScoped<IProductData,  ProductDataControl>();
 builder.Services.AddScoped<IShop, ShopDatabaseAccess>();
 builder.Services.AddScoped<IShopData, ShopDataControl>();
-
-
+builder.Services.AddScoped<IIngredient, IngredientDatabaseAccess>();
+builder.Services.AddScoped<IIngredientData, IngredientDataControl>();
+builder.Services.AddScoped<IProductGroup, ProductGroupDatabaseAccess>();
+builder.Services.AddScoped<IProductGroupData, ProductGroupDataControl>();
 
 builder.Services.AddControllers();
 

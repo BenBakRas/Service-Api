@@ -3,73 +3,65 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xunit;
 using Xunit.Abstractions;
 using ServiceData.DatabaseLayer;
 using ServiceData.ModelLayer;
 using ServiceData.DatabaseLayer.Interfaces;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace ServiceDataTest
 {
     public class IngredientDataTest
     {
         private readonly ITestOutputHelper _extraOutput;
-        readonly private IIngredient _ingredientAccess;
-
-        //readonly string _connectionString = "Server=Magnus-PC\\SQLEXPRESS; Integrated Security=true; Database=ServiceDB";
-        readonly string _connectionString = "Server=localhost; Integrated Security=true; Database=x";
+        private readonly IIngredient _ingredientAccess;
+        private readonly string _connectionString = "Server=localhost; Integrated Security=true; Database=x";
 
         public IngredientDataTest(ITestOutputHelper output)
         {
             _extraOutput = output;
             _ingredientAccess = new IngredientDatabaseAccess(_connectionString);
         }
-        private byte[] GetTestImageBytes()
-        {
-            // Load test image data as a byte array
-            // You can use libraries like System.Drawing or read from an image file
-            // For simplicity, this example creates a small byte array
-            return new byte[] { 0x12, 0x34, 0x56, 0x78 };
-        }
 
         [Fact]
-        public void TestCreateIngredient()
-        {
-            //Arrange
-            Ingredient ing1 = new Ingredient("Salat", 10, GetTestImageBytes()); //creates object
-
-            //Act
-            int insertedId = _ingredientAccess.CreateIngredient(ing1); //Creates object and inserts into database and returns ID
-
-            //Assert
-            Assert.True(insertedId > 0); //Asserts true if an Id was returned
-
-            //Cleanup
-            _ingredientAccess.DeleteIngredientById(insertedId); //Deletes as cleanup
-        }
-        [Fact]
-        public void TestDeleteIngredientById()
+        public async Task TestCreateIngredient()
         {
             // Arrange
-            Ingredient ing1 = new Ingredient("Salat", 10, GetTestImageBytes()); //creates object
-            int insertedId = _ingredientAccess.CreateIngredient(ing1); // Inserts object to Database
+            Ingredient ing1 = new Ingredient("Salat", 10, "Salat"); // creates object
 
             // Act
-            bool isDeleted = _ingredientAccess.DeleteIngredientById(insertedId);//Deletes object
+            int insertedId = await _ingredientAccess.CreateIngredient(ing1); // Creates object and inserts into the database and returns ID
 
             // Assert
-            Assert.True(isDeleted); //Asserts true if object is deleted.
+            Assert.True(insertedId > 0); // Asserts true if an ID was returned
 
+            // Cleanup
+            await _ingredientAccess.DeleteIngredientById(insertedId); // Deletes as cleanup
         }
+
         [Fact]
-        public void TestGetAllIngredients()
+        public async Task TestDeleteIngredientById()
         {
             // Arrange
-            Ingredient ing1 = new Ingredient("Salat", 10, GetTestImageBytes()); //creates object
-            int insertedId = _ingredientAccess.CreateIngredient(ing1); // Inserts object to Database
+            Ingredient ing1 = new Ingredient("Salat", 10, "Salat"); // creates object
+            int insertedId = await _ingredientAccess.CreateIngredient(ing1); // Inserts object into the database
 
             // Act
-            List<Ingredient> readIngredients = _ingredientAccess.GetAllIngredients();
+            bool isDeleted = await _ingredientAccess.DeleteIngredientById(insertedId); // Deletes object
+
+            // Assert
+            Assert.True(isDeleted); // Asserts true if the object is deleted.
+        }
+
+        [Fact]
+        public async Task TestGetAllIngredients()
+        {
+            // Arrange
+            Ingredient ing1 = new Ingredient("Salat", 10, "salat"); // creates object
+            int insertedId = await _ingredientAccess.CreateIngredient(ing1); // Inserts object into the database
+
+            // Act
+            List<Ingredient> readIngredients = await _ingredientAccess.GetAllIngredients();
             bool IngredientsWereRead = (readIngredients.Count > 0);
             // Print additional output
             _extraOutput.WriteLine("Number of Ingredients: " + readIngredients.Count);
@@ -77,36 +69,34 @@ namespace ServiceDataTest
             // Assert
             Assert.True(IngredientsWereRead);
 
-            //Cleanup
-            _ingredientAccess.DeleteIngredientById(insertedId);
+            // Cleanup
+            await _ingredientAccess.DeleteIngredientById(insertedId);
         }
+
         [Fact]
-        public void TestUpdateIngredient()
+        public async Task TestUpdateIngredient()
         {
             // Arrange
-            Ingredient ing1 = new Ingredient("Salat", 10, GetTestImageBytes()); //creates object
-            int insertedId = _ingredientAccess.CreateIngredient(ing1); // Inserts object to Database
+            Ingredient ing1 = new Ingredient("Salat", 10, "Salat"); // creates object
+            int insertedId = await _ingredientAccess.CreateIngredient(ing1); // Inserts object into the database
 
             // Modify the Ingredient object
-            Ingredient updatedIng = new Ingredient(insertedId, "karl", 10, GetTestImageBytes());
+            Ingredient updatedIng = new Ingredient(insertedId, "karl", 10, "Salat");
 
             // Act
-            bool isUpdated = _ingredientAccess.UpdateIngredientById(updatedIng);
+            bool isUpdated = await _ingredientAccess.UpdateIngredientById(updatedIng);
 
             // Retrieve the updated Ingredient from the database
-            Ingredient retrivedIng = _ingredientAccess.GetIngredientById(insertedId);
+            Ingredient retrievedIng = await _ingredientAccess.GetIngredientById(insertedId);
 
             // Assert
-            Assert.True(isUpdated); //Assert true if update went through
-            Assert.NotNull(retrivedIng); //Asserts true of the retrieved object is not null
-            Assert.Equal(insertedId, retrivedIng.Id); //Asserts true if insertedID and retrivedId is the same
-            Assert.Equal(retrivedIng.IngredientPrice, 10); //Asserts true if retrived parameter equals given parameter, 10 in this case. 
+            Assert.True(isUpdated); // Assert true if the update went through
+            Assert.NotNull(retrievedIng); // Asserts true if the retrieved object is not null
+            Assert.Equal(insertedId, retrievedIng.Id); // Asserts true if insertedID and retrievedId are the same
+            Assert.Equal(retrievedIng.IngredientPrice, 10); // Asserts true if retrieved parameter equals the given parameter, 10 in this case.
 
-            //Cleanup
-            _ingredientAccess.DeleteIngredientById(insertedId);
-
+            // Cleanup
+            await _ingredientAccess.DeleteIngredientById(insertedId);
         }
-
-
     }
 }
