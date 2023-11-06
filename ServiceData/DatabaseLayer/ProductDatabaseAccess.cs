@@ -25,8 +25,8 @@ namespace ServiceData.DatabaseLayer
         public async Task<int> CreateProduct(Product product)
         {
             int insertedId = -1;
-            string insertString = "INSERT INTO Product(ProductNumber, Description, BasePrice, Barcode, Category, ProductGroupID) " +
-                "OUTPUT INSERTED.ID values(@Productnumber, @Description, @BasePrice, @Barcode, @Category, @ProductGroupID)";
+            string insertString = "INSERT INTO Product(ProductNumber, Description, BasePrice, Barcode, Category, ProductGroupID, ImageName) " +
+                "OUTPUT INSERTED.ID values(@Productnumber, @Description, @BasePrice, @Barcode, @Category, @ProductGroupID, @ImageName)";
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand CreateCommand = new SqlCommand(insertString, con))
@@ -35,8 +35,9 @@ namespace ServiceData.DatabaseLayer
                 CreateCommand.Parameters.AddWithValue("@Description", product.Description);
                 CreateCommand.Parameters.AddWithValue("@BasePrice", product.BasePrice);
                 CreateCommand.Parameters.AddWithValue("@Barcode", product.Barcode);
-                CreateCommand.Parameters.AddWithValue("@Category", product.Category);
+                CreateCommand.Parameters.AddWithValue("@Category", product.CategoryType);
                 CreateCommand.Parameters.AddWithValue("@ProductGroupID", product.ProductGroup);
+                CreateCommand.Parameters.AddWithValue("@ImageName", product.ImageName);
 
                 await con.OpenAsync();
                 insertedId = (int)await CreateCommand.ExecuteScalarAsync();
@@ -114,7 +115,7 @@ namespace ServiceData.DatabaseLayer
         {
             bool isUpdated = false;
             string updateString = "UPDATE Product SET ProductNumber = @ProductNumber, Description = @Description, BasePrice = @BasePrice, " +
-                "Barcode = @Barcode, Category = @Category, ProductGroupID = @ProductGroupID WHERE Id = @Id";
+                "Barcode = @Barcode, Category = @Category, ProductGroupID = @ProductGroupID, ImageName = @ImageName WHERE Id = @Id";
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand updateCommand = new SqlCommand(updateString, con))
@@ -123,9 +124,10 @@ namespace ServiceData.DatabaseLayer
                 updateCommand.Parameters.AddWithValue("@Description", productToUpdate.Description);
                 updateCommand.Parameters.AddWithValue("@BasePrice", productToUpdate.BasePrice);
                 updateCommand.Parameters.AddWithValue("@Barcode", productToUpdate.Barcode);
-                updateCommand.Parameters.AddWithValue("@Category", productToUpdate.Category);
+                updateCommand.Parameters.AddWithValue("@Category", productToUpdate.CategoryType);
                 updateCommand.Parameters.AddWithValue("@ProductGroupID", productToUpdate.ProductGroup);
                 updateCommand.Parameters.AddWithValue("@Id", productToUpdate.Id);
+                updateCommand.Parameters.AddWithValue("@ImageName", productToUpdate.ImageName);
 
                 await con.OpenAsync();
                 int rowsAffected = await updateCommand.ExecuteNonQueryAsync();
@@ -157,9 +159,9 @@ namespace ServiceData.DatabaseLayer
             readerDescription = productReader.GetString(productReader.GetOrdinal("Description"));
             readerBasePrice = productReader.GetDecimal(productReader.GetOrdinal("BasePrice"));
             tempCategory = productReader.GetString(productReader.GetOrdinal("Category"));
-            readerCategory = Enum.TryParse(tempCategory, out Product._Category categoryValue);
+            readerCategory = Enum.TryParse(tempCategory, out Product.Category categoryValue);
             readerProductGroup = productReader.GetInt32(productReader.GetOrdinal("ProductGroupID"));
-            readerImage = productReader.GetString(productReader.GetOrdinal("Image"));
+            readerImage = productReader.GetString(productReader.GetOrdinal("ImageName"));
             
 
             //Create product object

@@ -7,10 +7,9 @@
         public string? Description { get; set; }
         public double? BasePrice { get; set; }
         public int? Barcode { get; set; }
-        public enum _Category { Burgere, Salater, Sides, Dips }
-        public _Category Category { get; set; }
+        public string CategoryType { get; set; }
         public int? ProductGroup { get; set; }
-        public String? Image { get; set; }
+        public string ImageName { get; set; }
 
         public ProductDto()
         {
