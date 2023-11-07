@@ -28,46 +28,37 @@ namespace ServiceData.DatabaseLayer
         }
 
 
-        public int CreateIngredient(Ingredient anIngredient)
+        public async Task<int> CreateIngredient(Ingredient anIngredient)
         {
             int insertedId = -1;
-
-            string insertString = "INSERT INTO Ingredient (name, ingredientPrice, Image) OUTPUT INSERTED.ID VALUES (@Name, @IngredientPrice, @Image)";
+            string insertString = "INSERT INTO Ingredient (name, ingredientPrice, imageName) OUTPUT INSERTED.ID VALUES (@Name, @IngredientPrice, @ImageName)";
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand createCommand = new SqlCommand(insertString, con))
             {
-                SqlParameter aIngNameParam = new SqlParameter("@Name", anIngredient.Name);
-                createCommand.Parameters.Add(aIngNameParam);
+                createCommand.Parameters.AddWithValue("@Name", anIngredient.Name);
+                createCommand.Parameters.AddWithValue("@IngredientPrice", anIngredient.IngredientPrice);
+                createCommand.Parameters.AddWithValue("@ImageName", anIngredient.ImageName);
 
-                SqlParameter aIngPrice = new SqlParameter("@IngredientPrice", anIngredient.IngredientPrice);
-                createCommand.Parameters.Add(aIngPrice);
-
-                // Add the Image parameter
-                SqlParameter imageParam = new SqlParameter("@Image", anIngredient.Image);
-                createCommand.Parameters.Add(imageParam);
-
-                con.Open();
-
-                // Execute the command and read the generated key (ID)
-                insertedId = (int)createCommand.ExecuteScalar();
+                await con.OpenAsync();
+                insertedId = (int)await createCommand.ExecuteScalarAsync();
             }
 
             return insertedId;
         }
 
-        public bool DeleteIngredientById(int id)
+        public async Task<bool> DeleteIngredientById(int id)
         {
             bool isDeleted = false;
-            //
             string deleteString = "DELETE FROM Ingredient WHERE Id = @Id";
+
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand deleteCommand = new SqlCommand(deleteString, con))
             {
                 deleteCommand.Parameters.AddWithValue("@Id", id);
 
-                con.Open();
-                int rowsAffected = deleteCommand.ExecuteNonQuery();
+                await con.OpenAsync();
+                int rowsAffected = await deleteCommand.ExecuteNonQueryAsync();
 
                 isDeleted = (rowsAffected > 0);
             }
@@ -75,47 +66,43 @@ namespace ServiceData.DatabaseLayer
             return isDeleted;
         }
 
-        public List<Ingredient> GetAllIngredients()
+        public async Task<List<Ingredient>> GetAllIngredients()
         {
-            List<Ingredient> foundIngredients;
-            Ingredient readIng;
-            //
-            string queryString = "SELECT Id, name, ingredientPrice, image FROM Ingredient";
+            List<Ingredient> foundIngredients = new List<Ingredient>();
+            string queryString = "SELECT Id, name, ingredientPrice, imageName FROM Ingredient";
+
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand readCommand = new SqlCommand(queryString, con))
             {
-                con.Open();
-                // Execute read
-                SqlDataReader ingredientsReader = readCommand.ExecuteReader();
-                // Collect data
-                foundIngredients = new List<Ingredient>();
-                while (ingredientsReader.Read())
+                await con.OpenAsync();
+                using (SqlDataReader ingredientsReader = await readCommand.ExecuteReaderAsync())
                 {
-                    readIng = GetIngFromReader(ingredientsReader);
-                    foundIngredients.Add(readIng);
+                    while (await ingredientsReader.ReadAsync())
+                    {
+                        Ingredient readIng = GetIngFromReader(ingredientsReader);
+                        foundIngredients.Add(readIng);
+                    }
                 }
             }
+
             return foundIngredients;
         }
 
-        public Ingredient GetIngredientById(int id)
+        public async Task<Ingredient> GetIngredientById(int id)
         {
             Ingredient foundIngredient = null;
 
-            string queryString = "select Id, name, ingredientPrice, image from Ingredient where id = @Id";
+            string queryString = "SELECT Id, name, ingredientPrice, imageName FROM Ingredient WHERE Id = @Id";
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand readCommand = new SqlCommand(queryString, con))
             {
-                // Prepare SQL
-                SqlParameter idParam = new SqlParameter("@Id", id);
-                readCommand.Parameters.Add(idParam);
+                readCommand.Parameters.AddWithValue("@Id", id);
 
-                con.Open();
-                // Execute read
-                using (SqlDataReader ingredientsReader = readCommand.ExecuteReader())
+                await con.OpenAsync();
+                using (SqlDataReader ingredientsReader = await readCommand.ExecuteReaderAsync())
                 {
-                    while (ingredientsReader.Read())
+                    while (await ingredientsReader.ReadAsync())
                     {
                         foundIngredient = GetIngFromReader(ingredientsReader);
                     }
@@ -125,11 +112,10 @@ namespace ServiceData.DatabaseLayer
             return foundIngredient;
         }
 
-
-        public bool UpdateIngredientById(Ingredient ingredientToUpdate)
+        public async Task<bool> UpdateIngredientById(Ingredient ingredientToUpdate)
         {
             bool isUpdated = false;
-            string updateString = "UPDATE Ingredient SET name = @Name, ingredientPrice = @IngredientPrice WHERE Id = @Id";
+            string updateString = "UPDATE Ingredient SET name = @Name, ingredientPrice = @IngredientPrice, imageName = @ImageName WHERE Id = @Id";
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand updateCommand = new SqlCommand(updateString, con))
@@ -137,19 +123,15 @@ namespace ServiceData.DatabaseLayer
                 updateCommand.Parameters.AddWithValue("@Id", ingredientToUpdate.Id);
                 updateCommand.Parameters.AddWithValue("@Name", ingredientToUpdate.Name);
                 updateCommand.Parameters.AddWithValue("@IngredientPrice", ingredientToUpdate.IngredientPrice);
+                updateCommand.Parameters.AddWithValue("@ImageName", ingredientToUpdate.ImageName);
 
-                con.Open();
-                int rowsAffected = updateCommand.ExecuteNonQuery();
+                await con.OpenAsync();
+                int rowsAffected = await updateCommand.ExecuteNonQueryAsync();
 
-                if (isUpdated = (rowsAffected > 0))
-                {
-                    return isUpdated;
-                }
-                else
-                {
-                    return false;
-                }
+                isUpdated = (rowsAffected > 0);
             }
+
+            return isUpdated;
         }
 
         private Ingredient GetIngFromReader(SqlDataReader ingredientsReader)
@@ -158,29 +140,17 @@ namespace ServiceData.DatabaseLayer
 
             int tempID;
             decimal tempIngPrice;
-            string tempIngName;
-            byte[] tempImage;
+            string tempIngName, tempImageName;
+
 
             // Fetch values
             tempID = ingredientsReader.GetInt32(ingredientsReader.GetOrdinal("Id"));
             tempIngPrice = ingredientsReader.GetDecimal(ingredientsReader.GetOrdinal("IngredientPrice"));
             tempIngName = ingredientsReader.GetString(ingredientsReader.GetOrdinal("Name"));
-
-            // Check if the "Image" column is not null in the database
-            int imageColumnIndex = ingredientsReader.GetOrdinal("Image");
-            if (!ingredientsReader.IsDBNull(imageColumnIndex))
-            {
-                tempImage = (byte[])ingredientsReader[imageColumnIndex];
-            }
-            else
-            {
-                // Handle the case when the "Image" column is null in the database
-                // You can set tempImage to null or an empty byte array as needed.
-                tempImage = new byte[0]; // Empty byte array
-            }
+            tempImageName = ingredientsReader.GetString(ingredientsReader.GetOrdinal("ImageName"));
 
             // Create the Ingredient object
-            foundIng = new Ingredient(tempID, tempIngName, tempIngPrice, tempImage);
+            foundIng = new Ingredient(tempID, tempIngName, tempIngPrice, tempImageName);
 
             return foundIng;
         }

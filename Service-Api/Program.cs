@@ -31,6 +31,13 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod();
     });
 });
+builder.Services.AddScoped<IIngredient, IngredientDatabaseAccess>();
+builder.Services.AddScoped<IIngredientData, IngredientDataControl>();
+builder.Services.AddScoped<IProductGroup, ProductGroupDatabaseAccess>();
+builder.Services.AddScoped<IProductGroupData, ProductGroupDataControl>();
+builder.Services.AddScoped<ICombo, ComboDatabaseAccess>();
+builder.Services.AddScoped<IComboData, ComboDataControl>();
+
 
 builder.Services.AddControllers();
 

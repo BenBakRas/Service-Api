@@ -13,6 +13,26 @@ namespace ServiceData.ModelLayer
 
         public string Name { get; set; }
 
+        public string ImageName { get; set; }
+
+        public decimal ComboPrice { get; set; }
+
       
+        //Constructor without parameters
+        public Combo() { }
+
+        //Reuses consturctor without Id
+        public Combo(string name, string imageName, decimal comboPrice)
+        {
+            Name = name;
+            ImageName = imageName;
+            ComboPrice = comboPrice;
+        }
+        //Reuses constructor with Id
+        public Combo(int id, string name, string imageName, decimal comboPrice) : this (name, imageName, comboPrice)
+        {
+            Id = id;
+        }
+
     }
 }

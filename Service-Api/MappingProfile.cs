@@ -25,6 +25,18 @@ namespace Service_Api
             CreateMap<Shop, ShopDto>(); // Configure the mapping
             CreateMap<ShopDto, Shop>(); // Configure reverse mapping
 
+            //Ingredient
+            CreateMap<Ingredient, IngredientDto>(); // Configure the mapping
+            CreateMap<IngredientDto, Ingredient>(); // Configure reverse mapping
+
+            //ProductGroup
+            CreateMap<ProductGroup, ProductGroupDto>(); // Configure the mapping
+            CreateMap<ProductGroupDto, ProductGroup>(); // Configure reverse mapping
+
+            //Combo
+            CreateMap<Combo, ComboDto>(); // Configure the mapping
+            CreateMap<ComboDto, Combo>(); // Configure reverse mapping
+
         }
 
     }

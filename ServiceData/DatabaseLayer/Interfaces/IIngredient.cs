@@ -1,21 +1,16 @@
-﻿using ServiceData.ModelLayer;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using ServiceData.ModelLayer;
 
 namespace ServiceData.DatabaseLayer.Interfaces
 {
     public interface IIngredient
     {
-        Ingredient GetIngredientById(int id);
-        List<Ingredient> GetAllIngredients();
-        int CreateIngredient(Ingredient anIngredient);
-        bool DeleteIngredientById(int id);
-        bool UpdateIngredientById(Ingredient ingredientToUpdate);
-
-
+        Task<Ingredient> GetIngredientById(int id);
+        Task<List<Ingredient>> GetAllIngredients();
+        Task<int> CreateIngredient(Ingredient anIngredient);
+        Task<bool> DeleteIngredientById(int id);
+        Task<bool> UpdateIngredientById(Ingredient ingredientToUpdate);
     }
 }

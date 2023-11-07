@@ -9,39 +9,34 @@ namespace ServiceData.ModelLayer
     public class Product
     {
         public int Id { get; set; }
-        public string? ProductNumber { get; set; }
-        public string? Description { get; set; }
-        public decimal? BasePrice { get; set; }
-        public int? Barcode { get; set; }
-        public enum _Category {Burgere, Salater, Sides, Dips}
-        public _Category Category { get; set; }
-        public int? ProductGroup { get; set; }
-        public String? Image {  get; set; }
+        public string ProductNumber { get; set; }
+        public string Description { get; set; }
+        public decimal BasePrice { get; set; }
+        public int Barcode { get; set; }
+        public enum Category {Burgere, Salater, Sides, Dips}
+        public Category CategoryType { get; set; }
+        public int ProductGroup { get; set; }
+        public string ImageName {  get; set; }
 
         //Empty Constructor
         public Product() { }
 
         //Constructor with parameters
-        public Product(string productNumber, string description, decimal basePrice, int barcode, _Category category, int productGroup)
+        public Product(string productNumber, string description, decimal basePrice, int barcode, Category categoryType, int productGroup, string imageName)
         {
             ProductNumber = productNumber;
             Description = description;
             BasePrice = basePrice;
             Barcode = barcode;
-            Category = category;
+            CategoryType = categoryType;
             ProductGroup = productGroup;
+            ImageName = imageName;
         }
 
         //Reuses constructor with Id
-        public Product(int id, string productNumber, string description, decimal basePrice, int barcode, _Category category, int productGroup) : this(productNumber, description, basePrice, barcode, category, productGroup)
+        public Product(int id, string productNumber, string description, decimal basePrice, int barcode, Category categoryType, int productGroup, string imageName) : this(productNumber, description, basePrice, barcode, categoryType, productGroup, imageName)
         {
             Id = id;
-        }
-
-        // Constructor with image
-        public Product(int id, string productNumber, string description, decimal basePrice, int barcode, _Category category, int productGroup, string image) : this(id, productNumber, description, basePrice, barcode, category, productGroup)
-        {
-            Image = image;
         }
 
     }
