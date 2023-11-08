@@ -7,7 +7,8 @@ namespace Service_Api.Controllers
     [ApiController]
     public class UploadController : Controller
     {
-        string MainPath = "C:\\Users\\Benqf\\source\\repos\\Service-Api\\Service-Api\\Uploads";
+        // string MainPath = "C:\\Users\\Benqf\\source\\repos\\Service-Api\\Service-Api\\Uploads";
+        string MainPath = "C:\\Users\\MagnusMølgaard\\source\\repos\\BenBakRas\\Service-Api\\Service-Api\\Uploads";
 
         [HttpPost]
         [Route("UploadFile")]
