@@ -27,6 +27,9 @@ builder.Services.AddScoped<IProductGroupData, ProductGroupDataControl>();
 builder.Services.AddScoped<ICombo, ComboDatabaseAccess>();
 builder.Services.AddScoped<IComboData, ComboDataControl>();
 
+builder.Services.AddScoped<IShopProduct, ShopProductDatabaseAccess>();
+builder.Services.AddScoped<IShopProductData, ShopProductDataControl>();
+
 // Configure CORS to allow any origin
 builder.Services.AddCors(options =>
 {

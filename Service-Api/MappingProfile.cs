@@ -37,6 +37,10 @@ namespace Service_Api
             CreateMap<Combo, ComboDto>(); // Configure the mapping
             CreateMap<ComboDto, Combo>(); // Configure reverse mapping
 
+            //ShopProduct
+            CreateMap<ShopProduct, ShopProductDto>(); // Configure the mapping
+            CreateMap<ShopProductDto, ShopProduct>(); // Configure reverse mapping
+
         }
 
     }
