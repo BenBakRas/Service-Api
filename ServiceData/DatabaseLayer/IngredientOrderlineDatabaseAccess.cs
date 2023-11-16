@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using ServiceData.DatabaseLayer.Interfaces;
 using ServiceData.ModelLayer;
-using System.Data.SqlClient;
 
 namespace ServiceData.DatabaseLayer
 {
@@ -22,42 +21,38 @@ namespace ServiceData.DatabaseLayer
             _connectionString = inConnectionString;
         }
 
-        public int CreateIngredientOrderline(IngredientOrderline ingredientOrderline)
+        public async Task CreateIngredientOrderline(IngredientOrderline anIngredientOrderline)
         {
-            int insertedId = -1;
-
             string insertString = "INSERT INTO IngredientOrderline(IngredientId, OrderlineId, Delta) " +
-                "OUTPUT INSERTED.ID values(@IngredientId, @OrderlineId, @Delta)";
+                                  "VALUES (@IngredientId, @OrderlineId, @Delta)";
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand createCommand = new SqlCommand(insertString, con))
             {
-                createCommand.Parameters.AddWithValue("@IngredientId", ingredientOrderline.IngredientId);
-                createCommand.Parameters.AddWithValue("@OrderlineId", ingredientOrderline.OrderlineId);
-                createCommand.Parameters.AddWithValue("@Delta", ingredientOrderline.Delta);
+                createCommand.Parameters.AddWithValue("@IngredientId", anIngredientOrderline.IngredientId);
+                createCommand.Parameters.AddWithValue("@OrderlineId", anIngredientOrderline.OrderlineId);
+                createCommand.Parameters.AddWithValue("@Delta", anIngredientOrderline.Delta);
 
-                con.Open();
-
-                insertedId = (int)createCommand.ExecuteScalar();
+                await con.OpenAsync();
+                await createCommand.ExecuteNonQueryAsync();
             }
-
-            return insertedId;
         }
 
-        public bool DeleteIngredientOrderlineById(int id)
+        public async Task<bool> DeleteIngredientOrderlineByIds(int ingredientId, int orderlineId)
         {
             bool isDeleted = false;
 
-            string deleteString = "DELETE FROM IngredientOrderline WHERE Id = @Id";
+            string deleteString = "DELETE FROM IngredientOrderline WHERE IngredientId = @IngredientId AND OrderlineId = @OrderlineId";
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand deleteCommand = new SqlCommand(deleteString, con))
             {
-                deleteCommand.Parameters.AddWithValue("@Id", id);
+                deleteCommand.Parameters.AddWithValue("@IngredientId", ingredientId);
+                deleteCommand.Parameters.AddWithValue("@OrderlineId", orderlineId);
 
-                con.Open();
+                await con.OpenAsync();
 
-                int rowsAffected = deleteCommand.ExecuteNonQuery();
+                int rowsAffected = await deleteCommand.ExecuteNonQueryAsync();
 
                 isDeleted = (rowsAffected > 0);
             }
@@ -65,7 +60,7 @@ namespace ServiceData.DatabaseLayer
             return isDeleted;
         }
 
-        public List<IngredientOrderline> GetAllIngredientOrderlines()
+        public async Task<List<IngredientOrderline>> GetAllIngredientOrderlines()
         {
             List<IngredientOrderline> foundIngredientOrderlines = new List<IngredientOrderline>();
             IngredientOrderline readIngredientOrderline;
@@ -75,11 +70,11 @@ namespace ServiceData.DatabaseLayer
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand readCommand = new SqlCommand(queryString, con))
             {
-                con.Open();
+                await con.OpenAsync();
 
-                SqlDataReader ingredientOrderlineReader = readCommand.ExecuteReader();
+                SqlDataReader ingredientOrderlineReader = await readCommand.ExecuteReaderAsync();
 
-                while (ingredientOrderlineReader.Read())
+                while (await ingredientOrderlineReader.ReadAsync())
                 {
                     readIngredientOrderline = GetIngredientOrderlineFromReader(ingredientOrderlineReader);
                     foundIngredientOrderlines.Add(readIngredientOrderline);
@@ -89,24 +84,25 @@ namespace ServiceData.DatabaseLayer
             return foundIngredientOrderlines;
         }
 
-        public IngredientOrderline GetIngredientOrderlineById(int id)
+        public async Task<IngredientOrderline> GetIngredientOrderlineByIds(int ingredientId, int orderlineId)
         {
             IngredientOrderline foundIngredientOrderline;
 
-            string queryString = "SELECT * FROM IngredientOrderline WHERE Id = @Id";
+            string queryString = "SELECT * FROM IngredientOrderline WHERE IngredientId = @IngredientId AND OrderlineId = @OrderlineId";
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand readCommand = new SqlCommand(queryString, con))
             {
-                readCommand.Parameters.AddWithValue("@Id", id);
+                readCommand.Parameters.AddWithValue("@IngredientId", ingredientId);
+                readCommand.Parameters.AddWithValue("@OrderlineId", orderlineId);
 
-                con.Open();
+                await con.OpenAsync();
 
-                SqlDataReader ingredientOrderlineReader = readCommand.ExecuteReader();
+                SqlDataReader ingredientOrderlineReader = await readCommand.ExecuteReaderAsync();
 
                 foundIngredientOrderline = new IngredientOrderline();
 
-                while (ingredientOrderlineReader.Read())
+                while (await ingredientOrderlineReader.ReadAsync())
                 {
                     foundIngredientOrderline = GetIngredientOrderlineFromReader(ingredientOrderlineReader);
                 }
@@ -115,24 +111,23 @@ namespace ServiceData.DatabaseLayer
             return foundIngredientOrderline;
         }
 
-        public bool UpdateIngredientOrderlineById(IngredientOrderline ingredientOrderlineToUpdate)
+        public async Task<bool> UpdateIngredientOrderlineByIds(IngredientOrderline ingredientOrderlineToUpdate)
         {
             bool isUpdated = false;
 
-            string updateString = "UPDATE IngredientOrderline SET IngredientId = @IngredientId, OrderlineId = @OrderlineId, Delta = @Delta " +
-                                  "WHERE Id = @Id";
+            string updateString = "UPDATE IngredientOrderline SET Delta = @Delta " +
+                                  "WHERE IngredientId = @IngredientId AND OrderlineId = @OrderlineId";
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand updateCommand = new SqlCommand(updateString, con))
             {
+                updateCommand.Parameters.AddWithValue("@Delta", ingredientOrderlineToUpdate.Delta);
                 updateCommand.Parameters.AddWithValue("@IngredientId", ingredientOrderlineToUpdate.IngredientId);
                 updateCommand.Parameters.AddWithValue("@OrderlineId", ingredientOrderlineToUpdate.OrderlineId);
-                updateCommand.Parameters.AddWithValue("@Delta", ingredientOrderlineToUpdate.Delta);
-                updateCommand.Parameters.AddWithValue("@Id", ingredientOrderlineToUpdate.Id);
 
-                con.Open();
+                await con.OpenAsync();
 
-                int rowsAffected = updateCommand.ExecuteNonQuery();
+                int rowsAffected = await updateCommand.ExecuteNonQueryAsync();
 
                 isUpdated = (rowsAffected > 0);
             }
@@ -142,19 +137,11 @@ namespace ServiceData.DatabaseLayer
 
         private IngredientOrderline GetIngredientOrderlineFromReader(SqlDataReader ingredientOrderlineReader)
         {
-            IngredientOrderline foundIngredientOrderline;
-
-            int readerId = ingredientOrderlineReader.GetInt32(ingredientOrderlineReader.GetOrdinal("Id"));
             int readerIngredientId = ingredientOrderlineReader.GetInt32(ingredientOrderlineReader.GetOrdinal("IngredientId"));
             int readerOrderlineId = ingredientOrderlineReader.GetInt32(ingredientOrderlineReader.GetOrdinal("OrderlineId"));
             int readerDelta = ingredientOrderlineReader.GetInt32(ingredientOrderlineReader.GetOrdinal("Delta"));
 
-            foundIngredientOrderline = new IngredientOrderline(readerIngredientId, readerOrderlineId, readerDelta)
-            {
-                Id = readerId
-            };
-
-            return foundIngredientOrderline;
+            return new IngredientOrderline(readerIngredientId, readerOrderlineId, readerDelta);
         }
     }
 }

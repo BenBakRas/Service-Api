@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ServiceData.DatabaseLayer
+namespace ServiceData.DatabaseLayer.Interfaces
 {
     public interface IOrders
     {
