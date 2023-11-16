@@ -3,6 +3,8 @@ using Service_Api.BusinessLogicLayer.Interfaces;
 using Service_Api.DTOs;
 using ServiceData.DatabaseLayer.Interfaces;
 using ServiceData.ModelLayer;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Service_Api.BusinessLogicLayer
 {
@@ -11,9 +13,16 @@ namespace Service_Api.BusinessLogicLayer
         private readonly IShopProduct _shopProductDatabaseAccess;
         private readonly IMapper _mapper;
 
+        public ShopProductDataControl(IShopProduct shopProductDatabaseAccess, IMapper mapper)
+        {
+            _shopProductDatabaseAccess = shopProductDatabaseAccess;
+            _mapper = mapper;
+        }
+
         public async Task CreateShopProduct(ShopProductDto shopProductDto)
         {
             var shopProduct = _mapper.Map<ShopProduct>(shopProductDto);
+            // Add logic to create shop product using _shopProductDatabaseAccess
         }
 
         public async Task<bool> DeleteShopProductByIds(int shopId, int productId)
@@ -26,6 +35,7 @@ namespace Service_Api.BusinessLogicLayer
             var shopProducts = await _shopProductDatabaseAccess.GetAllShopProducts();
             return _mapper.Map<List<ShopProductDto>>(shopProducts);
         }
+
         public async Task<List<ShopProductDto>> GetShopProductsByShopId(int shopId)
         {
             var shopProducts = await _shopProductDatabaseAccess.GetShopProductByShopId(shopId);
