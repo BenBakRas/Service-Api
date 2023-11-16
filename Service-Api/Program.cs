@@ -26,7 +26,6 @@ builder.Services.AddScoped<IProductGroup, ProductGroupDatabaseAccess>();
 builder.Services.AddScoped<IProductGroupData, ProductGroupDataControl>();
 builder.Services.AddScoped<ICombo, ComboDatabaseAccess>();
 builder.Services.AddScoped<IComboData, ComboDataControl>();
-
 builder.Services.AddScoped<IShopProduct, ShopProductDatabaseAccess>();
 builder.Services.AddScoped<IShopProductData, ShopProductDataControl>();
 

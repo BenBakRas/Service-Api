@@ -106,6 +106,21 @@ public class ShopProductController : ControllerBase
             return BadRequest("Error deleting a ShopProduct");
         }
     }
+    [HttpGet("ByShopId/{shopId}")]
+    public async Task<IActionResult> GetShopProductsByShopId(int shopId)
+    {
+        try
+        {
+            var shopProducts = await _shopProductData.GetShopProductsByShopId(shopId);
+            var shopProductDtos = _mapper.Map<List<ShopProductDto>>(shopProducts);
+            return Ok(shopProductDtos);
+        }
+        catch (Exception ex)
+        {
+            LogError("Error retrieving ShopProducts by ShopId" + ex.Message);
+            return BadRequest("Error finding ShopProducts");
+        }
+    }
     private void LogError(string message)
     {
         var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());

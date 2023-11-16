@@ -11,5 +11,6 @@ namespace Service_Api.BusinessLogicLayer.Interfaces
         Task<List<ShopProductDto>> GetAllShopProducts();
         Task<ShopProductDto> GetShopProductByIds(int shopId, int productId);
         Task<bool> UpdateShopProductByIds(int shopId, int productId, ShopProductDto shopProductDto);
+        Task<List<ShopProductDto>> GetShopProductsByShopId(int shopId);
     }
 }

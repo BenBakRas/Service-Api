@@ -12,7 +12,7 @@
         }
 
         //Constructor with parameters
-        public ShoShopProductDtopProduct(int shopId, int productId)
+        public ShopProductDto(int shopId, int productId)
         {
             ShopId = shopId;
             ProductId = productId;

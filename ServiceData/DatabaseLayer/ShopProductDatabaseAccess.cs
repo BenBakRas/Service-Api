@@ -109,6 +109,30 @@ namespace ServiceData.DatabaseLayer
 
             return foundShopProduct;
         }
+        public async Task<List<ShopProduct>> GetShopProductByShopId(int shopId)
+        {
+            List<ShopProduct> foundShopProducts = new List<ShopProduct>();
+
+            string queryString = "SELECT * FROM ShopProduct WHERE ShopId = @ShopId";
+
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            using (SqlCommand readCommand = new SqlCommand(queryString, con))
+            {
+                readCommand.Parameters.AddWithValue("@ShopId", shopId);
+
+                await con.OpenAsync();
+
+                SqlDataReader shopProductReader = await readCommand.ExecuteReaderAsync();
+
+                while (await shopProductReader.ReadAsync())
+                {
+                    foundShopProducts.Add(GetShopProductFromReader(shopProductReader));
+                }
+            }
+
+            return foundShopProducts;
+        }
+
 
         public async Task<bool> UpdateShopProductByIds(ShopProduct shopProductToUpdate)
         {
