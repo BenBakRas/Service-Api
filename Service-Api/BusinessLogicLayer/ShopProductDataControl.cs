@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Service_Api.BusinessLogicLayer.Interfaces;
 using Service_Api.DTOs;
+using ServiceData.DatabaseLayer;
 using ServiceData.DatabaseLayer.Interfaces;
 using ServiceData.ModelLayer;
 using System.Collections.Generic;
@@ -22,7 +23,8 @@ namespace Service_Api.BusinessLogicLayer
         public async Task CreateShopProduct(ShopProductDto shopProductDto)
         {
             var shopProduct = _mapper.Map<ShopProduct>(shopProductDto);
-            // Add logic to create shop product using _shopProductDatabaseAccess
+            await _shopProductDatabaseAccess.CreateShopProduct(shopProduct);
+
         }
 
         public async Task<bool> DeleteShopProductByIds(int shopId, int productId)
