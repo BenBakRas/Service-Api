@@ -48,5 +48,12 @@ namespace Service_Api.BusinessLogicLayer
         {
             return await _productDatabaseAccess.DeleteProductById(id);
         }
+        public async Task<List<ProductDto>> GetProductsByShopId(int shopId)
+        {
+            var products = await _productDatabaseAccess.GetProductsByShopId(shopId);
+            return _mapper.Map<List<ProductDto>>(products);
+        }
+
+
     }
 }

@@ -8,6 +8,7 @@ using log4net.Config;
 using log4net.Core;
 using log4net;
 using System.Reflection;
+using ServiceData.ModelLayer;
 
 [ApiController]
 [Route("api/products")]
@@ -108,6 +109,27 @@ public class ProductController : ControllerBase
             // Handle the exception or log it
             LogError("Error deleting a product: " + ex.Message);
             return BadRequest("Error deleting a product");
+        }
+    }
+
+    [HttpGet("shops/{id}")]
+    public async Task<ActionResult<List<Product>>> GetProductsByShopId(int id)
+    {
+        try
+        {
+            var products = await _productData.GetProductsByShopId(id);
+
+            if (products == null || products.Count == 0)
+            {
+                return NotFound("No products found for the specified shop.");
+            }
+
+            return Ok(products);
+        }
+        catch (Exception ex)
+        {
+            // Log the exception or handle it accordingly
+            return StatusCode(500, "Internal server error");
         }
     }
 
