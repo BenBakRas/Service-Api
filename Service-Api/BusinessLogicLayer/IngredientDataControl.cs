@@ -47,10 +47,10 @@ namespace Service_Api.BusinessLogicLayer
         {
             return await _ingredientDatabaseAccess.DeleteIngredientById(id);
         }
-        public async Task<List<Ingredient>> GetIngredientsByProductId(int productId)
+        public async Task<List<IngredientDto>> GetIngredientsByProductId(int productId)
         {
             var ingredients = await _ingredientDatabaseAccess.GetIngredientsByProductId(productId);
-            return _mapper.Map<List<Ingredient>>(ingredients);
+            return _mapper.Map<List<IngredientDto>>(ingredients);
         }
     }
 

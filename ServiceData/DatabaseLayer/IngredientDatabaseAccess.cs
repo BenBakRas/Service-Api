@@ -136,25 +136,25 @@ namespace ServiceData.DatabaseLayer
 
         public async Task<List<Ingredient>> GetIngredientsByProductId(int productId)
         {
-            List<Ingredient> products = new List<Ingredient>();
-            string queryString = "SELECT I.* FROM Ingredient I INNER JOIN IngredientProduct IP ON I.Id = IP.ProductId WHERE IP.ProductId = @ProductId";
+            List<Ingredient> ingredients = new List<Ingredient>();
+            string queryString = "SELECT I.* FROM Ingredient I INNER JOIN IngredientProduct IP ON I.Id = IP.IngredientId WHERE IP.ProductId = @ProductId";
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand readCommand = new SqlCommand(queryString, con))
             {
-                readCommand.Parameters.AddWithValue("@Product", productId);
+                readCommand.Parameters.AddWithValue("@ProductId", productId);
 
                 await con.OpenAsync();
 
-                using (SqlDataReader productReader = await readCommand.ExecuteReaderAsync())
+                using (SqlDataReader ingredientReader = await readCommand.ExecuteReaderAsync())
                 {
-                    while (await productReader.ReadAsync())
+                    while (await ingredientReader.ReadAsync())
                     {
-                        products.Add(GetIngFromReader(productReader));
+                        ingredients.Add(GetIngFromReader(ingredientReader));
                     }
                 }
             }
 
-            return products;
+            return ingredients;
         }
 
         private Ingredient GetIngFromReader(SqlDataReader ingredientsReader)

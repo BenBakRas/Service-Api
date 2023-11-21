@@ -10,7 +10,7 @@ namespace Service_Api.BusinessLogicLayer.Interfaces
         Task<int> CreateIngredient(IngredientDto ingredientDto);
         Task<bool> UpdateIngredientById(int id, IngredientDto ingredientDto);
         Task<bool> DeleteIngredientById(int id);
-        Task<List<Ingredient>> GetIngredientsByProductId(int productId);
+        Task<List<IngredientDto>> GetIngredientsByProductId(int productId);
     }
 }
 
