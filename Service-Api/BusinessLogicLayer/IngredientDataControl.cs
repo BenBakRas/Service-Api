@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Service_Api.BusinessLogicLayer.Interfaces;
 using Service_Api.DTOs;
+using ServiceData.DatabaseLayer;
 using ServiceData.DatabaseLayer.Interfaces;
 using ServiceData.ModelLayer;
 
@@ -45,6 +46,11 @@ namespace Service_Api.BusinessLogicLayer
         public async Task<bool> DeleteIngredientById(int id)
         {
             return await _ingredientDatabaseAccess.DeleteIngredientById(id);
+        }
+        public async Task<List<Ingredient>> GetIngredientsByProductId(int productId)
+        {
+            var ingredients = await _ingredientDatabaseAccess.GetIngredientsByProductId(productId);
+            return _mapper.Map<List<Ingredient>>(ingredients);
         }
     }
 
