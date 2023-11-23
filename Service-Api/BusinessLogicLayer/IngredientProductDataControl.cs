@@ -40,12 +40,12 @@ namespace Service_Api.BusinessLogicLayer
         public async Task<bool> UpdateIngredientProduct(IngredientProductDto ingredientProductDto)
         {
             var ingredientProduct = _mapper.Map<IngredientProduct>(ingredientProductDto);
-            return await _ingredientProductDatabaseAccess.UpdateIngredientProduct(ingredientProduct);
+            return await _ingredientProductDatabaseAccess.UpdateIngredientProductByIds(ingredientProduct);
         }
 
         public async Task<bool> DeleteIngredientProduct(int productId, int ingredientId)
         {
-            return await _ingredientProductDatabaseAccess.DeleteIngredientProduct(productId, ingredientId);
+            return await _ingredientProductDatabaseAccess.DeleteIngredientProductByIds(productId, ingredientId);
         }
     }
 }
