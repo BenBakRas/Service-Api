@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Service_Api.BusinessLogicLayer.Interfaces;
 using Service_Api.DTOs;
+using ServiceData.ModelLayer;
 
 namespace Service_Api.Controllers
 {
@@ -72,6 +73,27 @@ namespace Service_Api.Controllers
                 return Ok("Combo deleted successfully");
             }
             return NotFound();
+        }
+        [HttpGet("product/{id}")]
+        public async Task<ActionResult<List<Ingredient>>> GetIngredientsByProductId(int id)
+        {
+            try
+            {
+                var ingredients = await _ingredientData.GetIngredientsByProductId(id);
+
+                if (ingredients == null || ingredients.Count == 0)
+                {
+                    return NotFound("No ingredients found for the specified product.");
+                }
+
+                return Ok(ingredients);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it accordingly
+                return StatusCode(500, "Internal server error");
+            }
+
         }
     }
 }

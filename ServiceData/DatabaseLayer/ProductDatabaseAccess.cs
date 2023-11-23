@@ -138,6 +138,30 @@ namespace ServiceData.DatabaseLayer
             return isUpdated;
         }
 
+        public async Task<List<Product>> GetProductsByShopId(int shopId)
+        {
+            List<Product> products = new List<Product>();
+            string queryString = "SELECT P.* FROM Product P INNER JOIN ShopProduct SP ON P.Id = SP.ProductId WHERE SP.ShopId = @ShopId";
+
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            using (SqlCommand readCommand = new SqlCommand(queryString, con))
+            {
+                readCommand.Parameters.AddWithValue("@ShopId", shopId);
+
+                await con.OpenAsync();
+
+                using (SqlDataReader productReader = await readCommand.ExecuteReaderAsync())
+                {
+                    while (await productReader.ReadAsync())
+                    {
+                        products.Add(GetProductFromReader(productReader));
+                    }
+                }
+            }
+
+            return products;
+        }
+
 
         private Product GetProductFromReader(SqlDataReader productReader)
         {

@@ -164,5 +164,8 @@ namespace ServiceData.DatabaseLayer
 
             return new ShopProduct(readerShopId, readerProductId);
         }
+
+
+
     }
 }

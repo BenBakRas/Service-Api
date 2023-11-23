@@ -11,5 +11,6 @@ namespace ServiceData.DatabaseLayer.Interfaces
         Task<int> CreateProduct(Product aProduct);
         Task<bool> DeleteProductById(int id);
         Task<bool> UpdateProductById(Product productToUpdate);
+        Task<List<Product>> GetProductsByShopId(int shopId);
     }
 }

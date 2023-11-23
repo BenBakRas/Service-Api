@@ -12,5 +12,6 @@ namespace ServiceData.DatabaseLayer.Interfaces
         Task<int> CreateIngredient(Ingredient anIngredient);
         Task<bool> DeleteIngredientById(int id);
         Task<bool> UpdateIngredientById(Ingredient ingredientToUpdate);
+        Task<List<Ingredient>> GetIngredientsByProductId(int productId);
     }
 }
