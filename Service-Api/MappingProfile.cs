@@ -45,6 +45,14 @@ namespace Service_Api
             CreateMap<IngredientProduct, IngredientProductDto>(); // Configure the mapping
             CreateMap<IngredientProductDto, IngredientProduct>(); // Configure reverse mapping
 
+            //IngredientOrderline
+            CreateMap<IngredientOrderline, IngredientOrderlineDto>(); // Configure the mapping
+            CreateMap<IngredientOrderlineDto, IngredientOrderline>(); // Configure reverse mappin
+
+            //OrderlineGroup
+            CreateMap<OrderlineGroup, OrderlineGroupDto>(); // Configure the mapping
+            CreateMap<OrderlineGroupDto, OrderlineGroup>(); // Configure reverse mapping
+
         }
 
     }

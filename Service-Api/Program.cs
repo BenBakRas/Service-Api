@@ -31,6 +31,9 @@ builder.Services.AddScoped<IShopProductData, ShopProductDataControl>();
 builder.Services.AddScoped<IIngredientProduct, IngredientProductDatabaseAccess>();
 builder.Services.AddScoped<IIngredientProductData, IngredientProductDataControl>();
 
+builder.Services.AddScoped<IIngredientOrderline, IngredientOrderlineDatabaseAccess>();
+builder.Services.AddScoped<IIngredientOrderlineData, IngredientOrderlineDataControl>();
+
 // Configure CORS to allow any origin
 builder.Services.AddCors(options =>
 {

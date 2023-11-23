@@ -1,12 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using ServiceData.DatabaseLayer.Interfaces;
 using ServiceData.ModelLayer;
-using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ServiceData.DatabaseLayer
 {
@@ -23,29 +19,24 @@ namespace ServiceData.DatabaseLayer
         {
             _connectionString = inConnectionString;
         }
-        public int CreateOrderLine(OrderLine aOrderLine)
+
+        public int CreateOrderLine(OrderLine orderLine)
         {
             int insertedId = -1;
-            //
-            string insertString = "INSERT INTO  OrderLine(OrderLinePrice, Quantity, OrderID) OUTPUT INSERTED.ID " +
-                "values(@OrderLinePrice, @Quantity, @OrderId)";
+            string insertString = "INSERT INTO OrderLine(Quantity, OrderId, OrderlineGroupId) OUTPUT INSERTED.ID " +
+                "VALUES(@Quantity, @OrderId, @OrderlineGroupId)";
+
             using (SqlConnection con = new SqlConnection(_connectionString))
-            using (SqlCommand CreateCommand = new SqlCommand(insertString, con))
+            using (SqlCommand createCommand = new SqlCommand(insertString, con))
             {
-                //Add values
-                SqlParameter aOrderLinePriceParam = new("OrderLinePrice", aOrderLine.OrderlinePrice);
-                CreateCommand.Parameters.Add(aOrderLinePriceParam);
-
-                SqlParameter aOrderLineQuantity = new("Quantity", aOrderLine.Quantity);
-                CreateCommand.Parameters.Add(aOrderLineQuantity);
-
-                SqlParameter aOrderLineOrderIdParam = new("OrderID", aOrderLine.OrderId);
-                CreateCommand.Parameters.Add(aOrderLineOrderIdParam);
+                createCommand.Parameters.AddWithValue("@Quantity", orderLine.Quantity);
+                createCommand.Parameters.AddWithValue("@OrderId", orderLine.OrderId);
+                createCommand.Parameters.AddWithValue("@OrderlineGroupId", orderLine.OrderlineGroupId);
 
                 con.Open();
-                // Execute save and read generated key (ID)
-                insertedId = (int)CreateCommand.ExecuteScalar();
+                insertedId = (int)createCommand.ExecuteScalar();
             }
+
             return insertedId;
         }
 
@@ -70,88 +61,80 @@ namespace ServiceData.DatabaseLayer
 
         public List<OrderLine> GetAllOrderLines()
         {
-            List<OrderLine> foundOrderLines;
-            OrderLine readOrderLine;
-            //
+            List<OrderLine> foundOrderLines = new List<OrderLine>();
+
             string queryString = "SELECT * FROM OrderLine";
+
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand readCommand = new SqlCommand(queryString, con))
             {
                 con.Open();
-                // Execute read
                 SqlDataReader orderLineReader = readCommand.ExecuteReader();
-                // Collect data
-                foundOrderLines = new List<OrderLine>();
+
                 while (orderLineReader.Read())
                 {
-                    readOrderLine = GetOrderLinesFromReader(orderLineReader);
+                    OrderLine readOrderLine = GetOrderLinesFromReader(orderLineReader);
                     foundOrderLines.Add(readOrderLine);
                 }
             }
+
             return foundOrderLines;
         }
 
         public OrderLine GetOrderLineById(int id)
         {
-            OrderLine foundOrderLine;
-            //
+            OrderLine foundOrderLine = new OrderLine();
+
             string queryString = "SELECT * FROM OrderLine WHERE Id = @Id";
+
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand readCommand = new SqlCommand(queryString, con))
             {
-                //Prepare SQL
-                SqlParameter idParam = new SqlParameter("@Id", id);
-                readCommand.Parameters.Add(idParam);
+                readCommand.Parameters.AddWithValue("@Id", id);
 
                 con.Open();
-                //Execute read
                 SqlDataReader orderLineReader = readCommand.ExecuteReader();
-                foundOrderLine = new OrderLine();
+
                 while (orderLineReader.Read())
                 {
                     foundOrderLine = GetOrderLinesFromReader(orderLineReader);
                 }
             }
+
             return foundOrderLine;
         }
 
         public bool UpdateOrderLineById(OrderLine orderLineToUpdate)
         {
             bool isUpdated = false;
-            string updateString = "UPDATE OrderLine SET OrderLinePrice = @OrderLinePrice, Quantity = @Quantity";
+            string updateString = "UPDATE OrderLine SET Quantity = @Quantity, OrderId = @OrderId, OrderlineGroupId = @OrderlineGroupId WHERE Id = @Id";
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand updateCommand = new SqlCommand(updateString, con))
             {
-                updateCommand.Parameters.AddWithValue("@OrderLinePrice", orderLineToUpdate.OrderlinePrice);
                 updateCommand.Parameters.AddWithValue("@Quantity", orderLineToUpdate.Quantity);
+                updateCommand.Parameters.AddWithValue("@OrderId", orderLineToUpdate.OrderId);
+                updateCommand.Parameters.AddWithValue("@OrderlineGroupId", orderLineToUpdate.OrderlineGroupId);
+                updateCommand.Parameters.AddWithValue("@Id", orderLineToUpdate.Id);
+
                 con.Open();
 
                 int rowsAffected = updateCommand.ExecuteNonQuery();
-                if (isUpdated = (rowsAffected > 0))
-                {
-                    return isUpdated;
-                }
-                else
-                {
-                    return false;
-                }
+                isUpdated = (rowsAffected > 0);
             }
+
+            return isUpdated;
         }
 
         private OrderLine GetOrderLinesFromReader(SqlDataReader orderLineReader)
         {
-            OrderLine foundOrderLine;
-
-            //fetch values
             int readerId = orderLineReader.GetInt32(orderLineReader.GetOrdinal("Id"));
-            decimal readerOrderLinePrice = orderLineReader.GetDecimal(orderLineReader.GetOrdinal("OrderLinePrice"));
             int readerQuantity = orderLineReader.GetInt32(orderLineReader.GetOrdinal("Quantity"));
-            int readerOrderID = orderLineReader.GetInt32(orderLineReader.GetOrdinal("OrderID"));
+            int readerOrderId = orderLineReader.GetInt32(orderLineReader.GetOrdinal("OrderId"));
+            int readerOrderlineGroupId = orderLineReader.GetInt32(orderLineReader.GetOrdinal("OrderlineGroupId"));
 
-            //Create orderline object
-            foundOrderLine = new OrderLine(readerId, readerOrderLinePrice, readerQuantity, readerOrderID);
 
+            OrderLine foundOrderLine = new OrderLine(readerId, readerQuantity, readerOrderId, readerOrderlineGroupId);
             return foundOrderLine;
         }
     }

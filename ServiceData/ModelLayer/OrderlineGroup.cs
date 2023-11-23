@@ -8,23 +8,26 @@ namespace ServiceData.ModelLayer
 {
     public class OrderlineGroup
     {
-        public Product? Product { get; set; }
-        public OrderLine? Orderline { get; set; }
+        public int Id { get; set; }
+        public int ProductId { get; set; }
+        public int OrderlineId { get; set; }
 
-        public Combo? Combo { get; set; }
+        public int ComboId { get; set; }
         //Empty constructor
         public OrderlineGroup() { }
 
         //Constructor with parameteter xecept orderline
-        public OrderlineGroup(Product product)
+        public OrderlineGroup(int productId, int orderLineId, int comboId)
         {
-            Product = product;
+            ProductId = productId;
+            OrderlineId = orderLineId;
+            ComboId = comboId;
            
         }
-        //Constructor with orderline
-        public OrderlineGroup(Product product, OrderLine orderLine) : this (product)
+        public OrderlineGroup(int id, int productId, int orderLineId, int comboId) : this(productId, orderLineId, comboId) 
         {
-            Orderline = orderLine;
+            Id = id;
+
         }
 
 

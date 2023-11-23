@@ -10,42 +10,25 @@ namespace ServiceData.ModelLayer
     {
 
         public int Id { get; set; }
-        public decimal OrderlinePrice { get; set; }
         public int Quantity { get; set; }
-        public Orders? Orders { get; set; }
         public int OrderId { get; set; }
+        public int OrderlineGroupId { get; set; }  
 
         //Empty Constructor
         public OrderLine() { }
 
         //Constructor with parameters
-        public OrderLine(decimal orderlinePrice, int quantity, Orders order)
+        public OrderLine(int quantity, int orderId, int orderlineGroupId)
         {
-            OrderlinePrice = orderlinePrice;
+          
             Quantity = quantity;
-            Orders = order;
+            OrderId = orderId;
+            OrderlineGroupId = orderlineGroupId;
         }
         //Constructor with Id
-        public OrderLine(int id, decimal orderlinePrice, int quantity, Orders order) : this (orderlinePrice, quantity, order)
+        public OrderLine(int id, int quantity, int orderId, int orderlineGroupId) : this (quantity, orderId, orderlineGroupId)
         {
             Id = id;
         }
-
-        //Constructor with OrderID
-        public OrderLine(int id, decimal orderlinePrice, int quantity, int orderId)
-        {
-            Id = id;
-            OrderlinePrice = orderlinePrice;
-            Quantity = quantity;
-            OrderId = orderId;
-        }
-        
-        public OrderLine(decimal orderlinePrice, int quantity, int orderId)
-        {
-            OrderlinePrice = orderlinePrice;
-            Quantity = quantity;
-            OrderId = orderId;
-        }
-
     }
 }
