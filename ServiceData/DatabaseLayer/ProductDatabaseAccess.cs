@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using System.ComponentModel;
 
 namespace ServiceData.DatabaseLayer
 {
@@ -162,6 +163,28 @@ namespace ServiceData.DatabaseLayer
             return products;
         }
 
+        public async Task<List<string>> GetAllCategories()
+        {
+            List<string> categories = new List<string>();
+            string queryString = "SELECT DISTINCT Category FROM Product";
+
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            using (SqlCommand readCommand = new SqlCommand(queryString, con))
+            {
+                await con.OpenAsync();
+
+                using (SqlDataReader categoryReader = await readCommand.ExecuteReaderAsync())
+                {
+                    while (await categoryReader.ReadAsync())
+                    {
+                        string category = categoryReader.GetString(categoryReader.GetOrdinal("Category"));
+                        categories.Add(category);
+                    }
+                }
+            }
+
+            return categories;
+        }
 
         private Product GetProductFromReader(SqlDataReader productReader)
         {

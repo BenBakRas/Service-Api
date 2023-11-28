@@ -53,7 +53,10 @@ namespace Service_Api.BusinessLogicLayer
             var products = await _productDatabaseAccess.GetProductsByShopId(shopId);
             return _mapper.Map<List<ProductDto>>(products);
         }
-
+        public async Task<List<string>> GetAllCategories()
+        {
+            return await _productDatabaseAccess.GetAllCategories();
+        }
 
     }
 }
