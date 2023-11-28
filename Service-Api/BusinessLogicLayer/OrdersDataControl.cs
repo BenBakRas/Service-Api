@@ -10,42 +10,42 @@ namespace Service_Api.BusinessLogicLayer
 {
     public class OrdersDataControl : IOrdersData
     {
-        private readonly IOrderlineGroup _orderlineGroupDatabaseAccess;
+        private readonly IOrders _ordersGroupDatabaseAccess;  // Updated interface name
         private readonly IMapper _mapper;
 
-        public OrdersDataControl(IOrderlineGroup orderlineGroupDatabaseAccess, IMapper mapper)
+        public OrdersDataControl(IOrders ordersGroupDatabaseAccess, IMapper mapper)  // Updated interface name
         {
-            _orderlineGroupDatabaseAccess = orderlineGroupDatabaseAccess;
+            _ordersGroupDatabaseAccess = ordersGroupDatabaseAccess;
             _mapper = mapper;
         }
 
         public async Task<OrdersDto> GetOrderById(int id)
         {
-            var orders = await _orderlineGroupDatabaseAccess.GetOrderlineGroupById(id);
+            var orders = await _ordersGroupDatabaseAccess.GetOrderById(id);  // Updated method name
             return _mapper.Map<OrdersDto>(orders);
         }
 
         public async Task<List<OrdersDto>> GetAllOrders()
         {
-            var ordersList = await _orderlineGroupDatabaseAccess.GetAllOrderlineGroups();
+            var ordersList = await _ordersGroupDatabaseAccess.GetAllOrders();  // Updated method name
             return _mapper.Map<List<OrdersDto>>(ordersList);
         }
 
         public async Task<int> CreateOrder(OrdersDto orderDto)
         {
-            var order = _mapper.Map<OrderlineGroup>(orderDto);
-            return await _orderlineGroupDatabaseAccess.CreateOrderlineGroup(order);
+            var order = _mapper.Map<Orders>(orderDto);  // Updated class name
+            return await _ordersGroupDatabaseAccess.CreateOrder(order);  // Updated method name
         }
 
         public async Task<bool> UpdateOrder(OrdersDto orderDto)
         {
-            var order = _mapper.Map<OrderlineGroup>(orderDto);
-            return await _orderlineGroupDatabaseAccess.UpdateOrderlineGroupById(order);
+            var order = _mapper.Map<Orders>(orderDto);  // Updated class name
+            return await _ordersGroupDatabaseAccess.UpdateOrderById(order);  // Updated method name
         }
 
         public async Task<bool> DeleteOrder(int id)
         {
-            return await _orderlineGroupDatabaseAccess.DeleteOrderlineGroupById(id);
+            return await _ordersGroupDatabaseAccess.DeleteOrderById(id);// Updated method name
         }
     }
 }

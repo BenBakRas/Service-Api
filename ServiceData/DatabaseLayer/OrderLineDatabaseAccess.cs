@@ -3,6 +3,7 @@ using ServiceData.DatabaseLayer.Interfaces;
 using ServiceData.ModelLayer;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace ServiceData.DatabaseLayer
 {
@@ -20,27 +21,29 @@ namespace ServiceData.DatabaseLayer
             _connectionString = inConnectionString;
         }
 
-        public int CreateOrderLine(OrderLine orderLine)
+        public async Task<int> CreateOrderLine(OrderLine orderLine)
         {
             int insertedId = -1;
-            string insertString = "INSERT INTO OrderLine(Quantity, OrderId, OrderlineGroupId) OUTPUT INSERTED.ID " +
-                "VALUES(@Quantity, @OrderId, @OrderlineGroupId)";
+            string insertString = "INSERT INTO OrderLine (OrderlinePrice, Quantity, OrderId, OrderlineGroupId) OUTPUT INSERTED.ID " +
+                "VALUES (@OrderlinePrice, @Quantity, @OrderId, @OrderlineGroupId)";
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand createCommand = new SqlCommand(insertString, con))
             {
+                createCommand.Parameters.AddWithValue("@OrderlinePrice", orderLine.OrderlinePrice);
                 createCommand.Parameters.AddWithValue("@Quantity", orderLine.Quantity);
                 createCommand.Parameters.AddWithValue("@OrderId", orderLine.OrderId);
                 createCommand.Parameters.AddWithValue("@OrderlineGroupId", orderLine.OrderlineGroupId);
 
-                con.Open();
-                insertedId = (int)createCommand.ExecuteScalar();
+                await con.OpenAsync();
+                insertedId = (int)await createCommand.ExecuteScalarAsync();
             }
 
             return insertedId;
         }
 
-        public bool DeleteOrderLineById(int id)
+
+        public async Task<bool> DeleteOrderLineById(int id)
         {
             bool isDeleted = false;
             string deleteString = "DELETE FROM OrderLine WHERE Id = @Id";
@@ -50,8 +53,8 @@ namespace ServiceData.DatabaseLayer
             {
                 deleteCommand.Parameters.AddWithValue("@Id", id);
 
-                con.Open();
-                int rowsAffected = deleteCommand.ExecuteNonQuery();
+                await con.OpenAsync();
+                int rowsAffected = await deleteCommand.ExecuteNonQueryAsync();
 
                 isDeleted = (rowsAffected > 0);
             }
@@ -59,7 +62,7 @@ namespace ServiceData.DatabaseLayer
             return isDeleted;
         }
 
-        public List<OrderLine> GetAllOrderLines()
+        public async Task<List<OrderLine>> GetAllOrderLines()
         {
             List<OrderLine> foundOrderLines = new List<OrderLine>();
 
@@ -68,10 +71,10 @@ namespace ServiceData.DatabaseLayer
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand readCommand = new SqlCommand(queryString, con))
             {
-                con.Open();
-                SqlDataReader orderLineReader = readCommand.ExecuteReader();
+                await con.OpenAsync();
+                SqlDataReader orderLineReader = await readCommand.ExecuteReaderAsync();
 
-                while (orderLineReader.Read())
+                while (await orderLineReader.ReadAsync())
                 {
                     OrderLine readOrderLine = GetOrderLinesFromReader(orderLineReader);
                     foundOrderLines.Add(readOrderLine);
@@ -81,7 +84,7 @@ namespace ServiceData.DatabaseLayer
             return foundOrderLines;
         }
 
-        public OrderLine GetOrderLineById(int id)
+        public async Task<OrderLine> GetOrderLineById(int id)
         {
             OrderLine foundOrderLine = new OrderLine();
 
@@ -92,10 +95,10 @@ namespace ServiceData.DatabaseLayer
             {
                 readCommand.Parameters.AddWithValue("@Id", id);
 
-                con.Open();
-                SqlDataReader orderLineReader = readCommand.ExecuteReader();
+                await con.OpenAsync();
+                SqlDataReader orderLineReader = await readCommand.ExecuteReaderAsync();
 
-                while (orderLineReader.Read())
+                while (await orderLineReader.ReadAsync())
                 {
                     foundOrderLine = GetOrderLinesFromReader(orderLineReader);
                 }
@@ -104,37 +107,39 @@ namespace ServiceData.DatabaseLayer
             return foundOrderLine;
         }
 
-        public bool UpdateOrderLineById(OrderLine orderLineToUpdate)
+        public async Task<bool> UpdateOrderLineById(OrderLine orderLineToUpdate)
         {
             bool isUpdated = false;
-            string updateString = "UPDATE OrderLine SET Quantity = @Quantity, OrderId = @OrderId, OrderlineGroupId = @OrderlineGroupId WHERE Id = @Id";
+            string updateString = "UPDATE OrderLine SET OrderlinePrice = @OrderlinePrice, Quantity = @Quantity, OrderId = @OrderId, OrderlineGroupId = @OrderlineGroupId WHERE Id = @Id";
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand updateCommand = new SqlCommand(updateString, con))
             {
+                updateCommand.Parameters.AddWithValue("@OrderlinePrice", orderLineToUpdate.OrderlinePrice);
                 updateCommand.Parameters.AddWithValue("@Quantity", orderLineToUpdate.Quantity);
                 updateCommand.Parameters.AddWithValue("@OrderId", orderLineToUpdate.OrderId);
                 updateCommand.Parameters.AddWithValue("@OrderlineGroupId", orderLineToUpdate.OrderlineGroupId);
                 updateCommand.Parameters.AddWithValue("@Id", orderLineToUpdate.Id);
 
-                con.Open();
+                await con.OpenAsync();
 
-                int rowsAffected = updateCommand.ExecuteNonQuery();
+                int rowsAffected = await updateCommand.ExecuteNonQueryAsync();
                 isUpdated = (rowsAffected > 0);
             }
 
             return isUpdated;
         }
 
+
         private OrderLine GetOrderLinesFromReader(SqlDataReader orderLineReader)
         {
             int readerId = orderLineReader.GetInt32(orderLineReader.GetOrdinal("Id"));
+            decimal readerPrice = orderLineReader.GetDecimal(orderLineReader.GetOrdinal("OrderlinePrice"));
             int readerQuantity = orderLineReader.GetInt32(orderLineReader.GetOrdinal("Quantity"));
             int readerOrderId = orderLineReader.GetInt32(orderLineReader.GetOrdinal("OrderId"));
             int readerOrderlineGroupId = orderLineReader.GetInt32(orderLineReader.GetOrdinal("OrderlineGroupId"));
 
-
-            OrderLine foundOrderLine = new OrderLine(readerId, readerQuantity, readerOrderId, readerOrderlineGroupId);
+            OrderLine foundOrderLine = new OrderLine(readerId, readerPrice, readerQuantity, readerOrderId, readerOrderlineGroupId);
             return foundOrderLine;
         }
     }

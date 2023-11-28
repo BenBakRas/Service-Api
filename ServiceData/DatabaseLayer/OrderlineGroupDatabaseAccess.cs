@@ -24,18 +24,24 @@ namespace ServiceData.DatabaseLayer
         public async Task<int> CreateOrderlineGroup(OrderlineGroup orderlineGroup)
         {
             int insertedId = -1;
-            string insertString = "INSERT INTO OrderlineGroup(Id, ProductId, OrderlineId, ComboId) VALUES(@Id, @ProductId, @OrderlineId, @ComboId); SELECT SCOPE_IDENTITY()";
+            string insertString = "INSERT INTO OrderlineGroup (ProductId, OrderlineId, ComboId) OUTPUT INSERTED.ID VALUES(@ProductId, @OrderlineId, @ComboId);";
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand createCommand = new SqlCommand(insertString, con))
             {
-                createCommand.Parameters.AddWithValue("@Id", orderlineGroup.Id);
-                createCommand.Parameters.AddWithValue("@ProductId", orderlineGroup.ProductId);
-                createCommand.Parameters.AddWithValue("@OrderlineId", orderlineGroup.OrderlineId);
-                createCommand.Parameters.AddWithValue("@ComboId", orderlineGroup.ComboId);
+                SqlParameter aProIdparam = new("@ProductId", orderlineGroup.ProductId);
+                createCommand.Parameters.Add(aProIdparam);
+
+                SqlParameter aOrderlineParam = new("@OrderlineId", orderlineGroup.OrderlineId);
+                createCommand.Parameters.Add(aOrderlineParam);
+
+                SqlParameter aCombiParam = new("@ComboId", orderlineGroup.ComboId);
+                createCommand.Parameters.Add(aCombiParam);
 
                 await con.OpenAsync();
-                insertedId = Convert.ToInt32(await createCommand.ExecuteScalarAsync());
+
+
+                insertedId = (int)await createCommand.ExecuteScalarAsync();
             }
             return insertedId;
         }

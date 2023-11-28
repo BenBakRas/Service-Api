@@ -124,7 +124,7 @@ namespace ServiceData.DatabaseLayer
             int readerId = ordersReader.GetInt32(ordersReader.GetOrdinal("Id"));
             int readerOrderNumber = ordersReader.GetInt32(ordersReader.GetOrdinal("OrderNumber"));
             DateTime readerDateTime = ordersReader.GetDateTime(ordersReader.GetOrdinal("DateTime"));
-            double readerTotalPrice = ordersReader.GetDouble(ordersReader.GetOrdinal("TotalPrice"));
+            decimal readerTotalPrice = ordersReader.GetDecimal(ordersReader.GetOrdinal("TotalPrice"));
             int readerShopId = ordersReader.GetInt32(ordersReader.GetOrdinal("ShopID"));
 
             return new Orders(readerId, readerOrderNumber, readerDateTime, readerTotalPrice, readerShopId);

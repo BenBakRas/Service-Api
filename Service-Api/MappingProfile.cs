@@ -12,7 +12,6 @@ namespace Service_Api
             CreateMap<CustomerGroup, CustomerGroupDto>(); // Configure the mapping
             CreateMap<CustomerGroupDto, CustomerGroup>(); // Configure reverse mapping
 
-
             //Discount
             CreateMap<Discount, DiscountDto>(); // Configure the mapping
             CreateMap<DiscountDto, Discount>(); // Configure reverse mapping

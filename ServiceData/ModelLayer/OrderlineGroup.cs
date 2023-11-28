@@ -11,7 +11,6 @@ namespace ServiceData.ModelLayer
         public int Id { get; set; }
         public int ProductId { get; set; }
         public int OrderlineId { get; set; }
-
         public int ComboId { get; set; }
         //Empty constructor
         public OrderlineGroup() { }

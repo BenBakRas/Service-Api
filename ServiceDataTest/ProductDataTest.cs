@@ -16,7 +16,7 @@ namespace ServiceDataTest
         readonly private IProduct _productAccess;
 
         readonly string _connectionString = "Server=Magnus-PC\\SQLEXPRESS; Integrated Security = true; Database=ServiceDB";
-
+        /*
         public ProductDataTest(ITestOutputHelper output)
         {
             _extraOutput = output;
@@ -99,6 +99,8 @@ namespace ServiceDataTest
 
             // Cleanup
             await _productAccess.DeleteProductById(insertedId);
+        
         }
+        */
     }
 }

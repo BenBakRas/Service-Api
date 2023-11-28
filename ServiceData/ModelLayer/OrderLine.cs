@@ -10,6 +10,7 @@ namespace ServiceData.ModelLayer
     {
 
         public int Id { get; set; }
+        public decimal OrderlinePrice { get; set; }
         public int Quantity { get; set; }
         public int OrderId { get; set; }
         public int OrderlineGroupId { get; set; }  
@@ -18,15 +19,15 @@ namespace ServiceData.ModelLayer
         public OrderLine() { }
 
         //Constructor with parameters
-        public OrderLine(int quantity, int orderId, int orderlineGroupId)
+        public OrderLine(decimal orderlinePrice, int quantity, int orderId, int orderlineGroupId)
         {
-          
+            OrderlinePrice = orderlinePrice;
             Quantity = quantity;
             OrderId = orderId;
             OrderlineGroupId = orderlineGroupId;
         }
         //Constructor with Id
-        public OrderLine(int id, int quantity, int orderId, int orderlineGroupId) : this (quantity, orderId, orderlineGroupId)
+        public OrderLine(int id, decimal orderlinePrice, int quantity, int orderId, int orderlineGroupId) : this (orderlinePrice, quantity, orderId, orderlineGroupId)
         {
             Id = id;
         }
