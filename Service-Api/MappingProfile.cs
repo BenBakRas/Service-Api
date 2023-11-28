@@ -53,6 +53,14 @@ namespace Service_Api
             CreateMap<OrderlineGroup, OrderlineGroupDto>(); // Configure the mapping
             CreateMap<OrderlineGroupDto, OrderlineGroup>(); // Configure reverse mapping
 
+            //OrderLine
+            CreateMap<OrderLine, OrderLineDto>(); // Configure the mapping
+            CreateMap<OrderLineDto, OrderLine>(); // Configure reverse mapping
+
+            //Orders
+            CreateMap<Orders, OrdersDto>(); // Configure the mapping
+            CreateMap<OrdersDto, Orders>(); // Configure reverse mapping
+
         }
 
     }

@@ -13,40 +13,23 @@ namespace ServiceData.ModelLayer
         public DateTime DateTime { get; set; }
         public double TotalPrice { get; set; }
         public int ShopId { get; set; }
-        public Shop? Shop { get; set; }
         //Empty Constructor
         public Orders() { }
 
         //Constructor with parameters
-        public Orders(int orderNumber, DateTime dateTime, double totalPrice, Shop shop)
+        public Orders( int orderNumber, DateTime dateTime, double totalPrice, int shopId)
         {
+            
             OrderNumber = orderNumber;
             DateTime = dateTime;
             TotalPrice = totalPrice;
-            Shop = shop;
+            ShopId = shopId;
         }
 
         //Constructor with Id
-        public Orders(int id, int orderNumber, DateTime dateTime, double totalPrice, Shop shop) : this (orderNumber, dateTime, totalPrice, shop)
+        public Orders(int id, int orderNumber, DateTime dateTime, double totalPrice, int shopId) : this (orderNumber, dateTime, totalPrice, shopId)
         {
             Id = id;
-        }
-
-        public Orders(int id, int orderNumber, DateTime dateTime, double totalPrice, int shopId)
-        {
-            Id = id;
-            OrderNumber = orderNumber;
-            DateTime = dateTime;
-            TotalPrice = totalPrice;
-            ShopId = shopId;
-        }
-
-        public Orders(int orderNumber, DateTime dateTime, double totalPrice, int shopId)
-        {
-            OrderNumber = orderNumber;
-            DateTime = dateTime;
-            TotalPrice = totalPrice;
-            ShopId = shopId;
         }
 
     }

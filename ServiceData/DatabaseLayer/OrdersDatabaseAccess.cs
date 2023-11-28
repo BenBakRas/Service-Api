@@ -4,8 +4,6 @@ using ServiceData.ModelLayer;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ServiceData.DatabaseLayer
@@ -24,47 +22,36 @@ namespace ServiceData.DatabaseLayer
             _connectionString = inConnectionString;
         }
 
-        public int CreateOrder(Orders aOrder)
+        public async Task<int> CreateOrder(Orders aOrder)
         {
             int insertedId = -1;
-            //
-            string insertString = "INSERT INTO  Orders(OrderNumber, DateTime, TotalPrice, ShopID) OUTPUT INSERTED.ID " +
+            string insertString = "INSERT INTO Orders(OrderNumber, DateTime, TotalPrice, ShopID) OUTPUT INSERTED.ID " +
                 "values(@OrderNumber, @DateTime, @TotalPrice, @ShopID)";
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand CreateCommand = new SqlCommand(insertString, con))
             {
-                //Add values
-                SqlParameter aOrderNumberParam = new("OrderNumber", aOrder.OrderNumber);
-                CreateCommand.Parameters.Add(aOrderNumberParam);
+                CreateCommand.Parameters.AddWithValue("@OrderNumber", aOrder.OrderNumber);
+                CreateCommand.Parameters.AddWithValue("@DateTime", DateTime.Now);
+                CreateCommand.Parameters.AddWithValue("@TotalPrice", aOrder.TotalPrice);
+                CreateCommand.Parameters.AddWithValue("@ShopID", aOrder.ShopId);
 
-                SqlParameter aOrderDateTime = new("DateTime", DateTime.Now);
-                CreateCommand.Parameters.Add(aOrderDateTime);
-
-                SqlParameter aTotalPriceParam = new("TotalPrice", aOrder.TotalPrice);   
-                CreateCommand.Parameters.Add(aTotalPriceParam);
-
-                SqlParameter aOrderShopIdParam = new("ShopID", aOrder.ShopId);
-                CreateCommand.Parameters.Add(aOrderShopIdParam);
-
-                con.Open();
-                // Execute save and read generated key (ID)
-                insertedId = (int)CreateCommand.ExecuteScalar();
+                await con.OpenAsync();
+                insertedId = (int)await CreateCommand.ExecuteScalarAsync();
             }
             return insertedId;
         }
 
-        public bool DeleteOrderById(int id)
+        public async Task<bool> DeleteOrderById(int id)
         {
             bool isDeleted = false;
-            //
             string deleteString = "DELETE FROM Orders WHERE Id = @Id";
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand deleteCommand = new SqlCommand(deleteString, con))
             {
                 deleteCommand.Parameters.AddWithValue("@Id", id);
 
-                con.Open();
-                int rowsAffected = deleteCommand.ExecuteNonQuery();
+                await con.OpenAsync();
+                int rowsAffected = await deleteCommand.ExecuteNonQueryAsync();
 
                 isDeleted = (rowsAffected > 0);
             }
@@ -72,46 +59,35 @@ namespace ServiceData.DatabaseLayer
             return isDeleted;
         }
 
-        public List<Orders> GetAllOrders()
+        public async Task<List<Orders>> GetAllOrders()
         {
-            List<Orders> foundOrders;
-            Orders readOrder;
-            //
+            List<Orders> foundOrders = new List<Orders>();
             string queryString = "SELECT * FROM Orders";
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand readCommand = new SqlCommand(queryString, con))
             {
-                con.Open();
-                // Execute read
-                SqlDataReader ordersReader = readCommand.ExecuteReader();
-                // Collect data
-                foundOrders = new List<Orders>();
-                while (ordersReader.Read())
+                await con.OpenAsync();
+                SqlDataReader ordersReader = await readCommand.ExecuteReaderAsync();
+                while (await ordersReader.ReadAsync())
                 {
-                    readOrder = GetOrdersFromReader(ordersReader);
+                    Orders readOrder = GetOrdersFromReader(ordersReader);
                     foundOrders.Add(readOrder);
                 }
             }
             return foundOrders;
         }
 
-        public Orders GetOrderById(int id)
+        public async Task<Orders> GetOrderById(int id)
         {
-            Orders foundOrder;
-            //
+            Orders foundOrder = new Orders();
             string queryString = "SELECT * FROM Orders WHERE Id = @Id";
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand readCommand = new SqlCommand(queryString, con))
             {
-                //Prepare SQL
-                SqlParameter idParam = new SqlParameter("@Id", id);
-                readCommand.Parameters.Add(idParam);
-                
-                con.Open();
-                //Execute read
-                SqlDataReader orderReader = readCommand.ExecuteReader();
-                foundOrder = new Orders();
-                while (orderReader.Read())
+                readCommand.Parameters.AddWithValue("@Id", id);
+                await con.OpenAsync();
+                SqlDataReader orderReader = await readCommand.ExecuteReaderAsync();
+                while (await orderReader.ReadAsync())
                 {
                     foundOrder = GetOrdersFromReader(orderReader);
                 }
@@ -119,51 +95,39 @@ namespace ServiceData.DatabaseLayer
             return foundOrder;
         }
 
-        public bool UpdateOrderById(Orders orderToUpdate)
+        public async Task<bool> UpdateOrderById(Orders orderToUpdate)
         {
             bool isUpdated = false;
-            string updateString = "UPDATE Orders SET OrderNumber = @OrderNumber, DateTime = @DateTime, TotalPrice = @TotalPrice, " +
-                "ShopID = @ShopId;";
+            string updateString = "UPDATE Orders SET OrderNumber = @OrderNumber, DateTime = @DateTime, " +
+                "TotalPrice = @TotalPrice, ShopID = @ShopId WHERE Id = @Id";
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand updateCommand = new SqlCommand(updateString, con))
             {
+                updateCommand.Parameters.AddWithValue("@Id", orderToUpdate.Id);
                 updateCommand.Parameters.AddWithValue("@OrderNumber", orderToUpdate.OrderNumber);
                 updateCommand.Parameters.AddWithValue("@DateTime", orderToUpdate.DateTime);
                 updateCommand.Parameters.AddWithValue("@TotalPrice", orderToUpdate.TotalPrice);
                 updateCommand.Parameters.AddWithValue("@ShopId", orderToUpdate.ShopId);
 
-                con.Open();
-                int rowsAffected = updateCommand.ExecuteNonQuery();
+                await con.OpenAsync();
+                int rowsAffected = await updateCommand.ExecuteNonQueryAsync();
 
-                if (isUpdated = (rowsAffected > 0))
-                {
-                    return isUpdated;
-                }
-                else
-                {
-                    return false;
-                }
+                isUpdated = (rowsAffected > 0);
             }
+
+            return isUpdated;
         }
 
         private Orders GetOrdersFromReader(SqlDataReader ordersReader)
         {
-            Orders foundOrder;
-
-            //fetch values
             int readerId = ordersReader.GetInt32(ordersReader.GetOrdinal("Id"));
             int readerOrderNumber = ordersReader.GetInt32(ordersReader.GetOrdinal("OrderNumber"));
             DateTime readerDateTime = ordersReader.GetDateTime(ordersReader.GetOrdinal("DateTime"));
             double readerTotalPrice = ordersReader.GetDouble(ordersReader.GetOrdinal("TotalPrice"));
             int readerShopId = ordersReader.GetInt32(ordersReader.GetOrdinal("ShopID"));
 
-
-            //Create orders object
-            foundOrder = new Orders(readerId, readerOrderNumber, readerDateTime, readerTotalPrice, readerShopId);
-
-
-            return foundOrder;
+            return new Orders(readerId, readerOrderNumber, readerDateTime, readerTotalPrice, readerShopId);
         }
     }
 }
