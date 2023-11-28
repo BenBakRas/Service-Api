@@ -32,6 +32,8 @@ builder.Services.AddScoped<IIngredientProduct, IngredientProductDatabaseAccess>(
 builder.Services.AddScoped<IIngredientProductData, IngredientProductDataControl>();
 builder.Services.AddScoped<IIngredientOrderline, IngredientOrderlineDatabaseAccess>();
 builder.Services.AddScoped<IIngredientOrderlineData, IngredientOrderlineDataControl>();
+builder.Services.AddScoped<IOrderlineGroup, OrderlineGroupDatabaseAccess>();
+builder.Services.AddScoped<IOrderlineGroupData, OrderlineGroupDataControl>();
 builder.Services.AddScoped<IOrderLine, OrderLineDatabaseAccess>();
 builder.Services.AddScoped<IOrderLineData, OrderLineDataControl>();
 builder.Services.AddScoped<IOrders, OrdersDatabaseAccess>();
