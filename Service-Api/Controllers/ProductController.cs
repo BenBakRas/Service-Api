@@ -147,6 +147,21 @@ public class ProductController : ControllerBase
         }
     }
 
+    [HttpGet("categories/{category}/shops/{shopId}")]
+    public async Task<ActionResult<List<ProductDto>>> GetProductsByCategoryAndShop(string category, int shopId)
+    {
+        try
+        {
+            var products = await _productData.GetProductsByCategoryAndShop(category, shopId);
+            return Ok(products);
+        }
+        catch (Exception ex)
+        {
+            // Log the exception or handle it as needed
+            return StatusCode(500, "Internal server error");
+        }
+    }
+
     private void LogError(string message)
     {
         var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());

@@ -14,5 +14,6 @@ namespace Service_Api.BusinessLogicLayer.Interfaces
         Task<bool> DeleteProductById(int id);
         Task<List<ProductDto>> GetProductsByShopId(int shopId);
         Task<List<string>> GetAllCategories();
+        Task<List<ProductDto>> GetProductsByCategoryAndShop(string category, int shopId);
     }
 }
