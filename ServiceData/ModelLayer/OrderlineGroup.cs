@@ -19,7 +19,7 @@ namespace ServiceData.ModelLayer
         {
             ProductId = productId;
             OrderlineId = orderlineId;
-            ComboId = ComboId;
+            ComboId = comboId;
 
         }
 
