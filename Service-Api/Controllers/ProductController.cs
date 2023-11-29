@@ -132,6 +132,35 @@ public class ProductController : ControllerBase
             return StatusCode(500, "Internal server error");
         }
     }
+    [HttpGet("categories")]
+    public async Task<ActionResult<List<string>>> GetAllCategories()
+    {
+        try
+        {
+            var categories = await _productData.GetAllCategories();
+            return Ok(categories);
+        }
+        catch (Exception ex)
+        {
+            // Handle exceptions appropriately
+            return StatusCode(500, "Internal server error");
+        }
+    }
+
+    [HttpGet("categories/{category}/shops/{shopId}")]
+    public async Task<ActionResult<List<ProductDto>>> GetProductsByCategoryAndShop(string category, int shopId)
+    {
+        try
+        {
+            var products = await _productData.GetProductsByCategoryAndShop(category, shopId);
+            return Ok(products);
+        }
+        catch (Exception ex)
+        {
+            // Log the exception or handle it as needed
+            return StatusCode(500, "Internal server error");
+        }
+    }
 
     private void LogError(string message)
     {

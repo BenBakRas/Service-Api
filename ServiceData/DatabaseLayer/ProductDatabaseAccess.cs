@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using System.ComponentModel;
 
 namespace ServiceData.DatabaseLayer
 {
@@ -162,6 +163,56 @@ namespace ServiceData.DatabaseLayer
             return products;
         }
 
+        public async Task<List<string>> GetAllCategories()
+        {
+            List<string> categories = new List<string>();
+            string queryString = "SELECT DISTINCT Category FROM Product";
+
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            using (SqlCommand readCommand = new SqlCommand(queryString, con))
+            {
+                await con.OpenAsync();
+
+                using (SqlDataReader categoryReader = await readCommand.ExecuteReaderAsync())
+                {
+                    while (await categoryReader.ReadAsync())
+                    {
+                        string category = categoryReader.GetString(categoryReader.GetOrdinal("Category"));
+                        categories.Add(category);
+                    }
+                }
+            }
+
+            return categories;
+        }
+
+        public async Task<List<Product>> GetProductsByCategoryAndShop(string category, int shopId)
+        {
+            List<Product> products = new List<Product>();
+
+            // Replace the following with your actual SQL query to fetch products by category and shop
+            string queryString = "SELECT P.* FROM Product P INNER JOIN ShopProduct SP ON P.Id = SP.ProductId WHERE SP.ShopId = @ShopId AND P.Category = @Category";
+
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            using (SqlCommand readCommand = new SqlCommand(queryString, con))
+            {
+                readCommand.Parameters.AddWithValue("@ShopId", shopId);
+                readCommand.Parameters.AddWithValue("@Category", category);
+
+                await con.OpenAsync();
+
+                using (SqlDataReader productReader = await readCommand.ExecuteReaderAsync())
+                {
+                    while (await productReader.ReadAsync())
+                    {
+                        products.Add(GetProductFromReader(productReader));
+                    }
+                }
+            }
+
+            return products;
+        }
+
 
         private Product GetProductFromReader(SqlDataReader productReader)
         {
@@ -186,7 +237,7 @@ namespace ServiceData.DatabaseLayer
             readerCategory = Enum.TryParse(tempCategory, out Product.Category categoryValue);
             readerProductGroup = productReader.GetInt32(productReader.GetOrdinal("ProductGroupID"));
             readerImage = productReader.GetString(productReader.GetOrdinal("ImageName"));
-            
+
 
             //Create product object
             foundProduct = new Product(readerID, readerProductNumber, readerDescription, readerBasePrice, readerBarcode, categoryValue, readerProductGroup, readerImage);

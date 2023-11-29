@@ -13,7 +13,7 @@ namespace ServiceData.ModelLayer
         public string Description { get; set; }
         public decimal BasePrice { get; set; }
         public int Barcode { get; set; }
-        public enum Category {Burgere, Salater, Sides, Dips}
+        public enum Category {Burgere, Salater, Sides, Dips, Drikkevarer}
         public Category CategoryType { get; set; }
         public int ProductGroup { get; set; }
         public string ImageName {  get; set; }
