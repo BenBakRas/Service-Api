@@ -9,5 +9,6 @@ namespace Service_Api.BusinessLogicLayer.Interfaces
         Task<int> CreateOrderLine(OrderLineDto orderLineDto);
         Task<bool> UpdateOrderLine(OrderLineDto orderLineDto);
         Task<bool> DeleteOrderLine(int id);
+        Task<OrderlineGroupDto> GetOrderlineGroupByOrderlineId(int orderlineId);
     }
 }

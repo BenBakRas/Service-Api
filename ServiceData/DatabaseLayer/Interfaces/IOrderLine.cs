@@ -11,5 +11,6 @@ namespace ServiceData.DatabaseLayer.Interfaces
         Task<int> CreateOrderLine(OrderLine orderLine);
         Task<bool> DeleteOrderLineById(int id);
         Task<bool> UpdateOrderLineById(OrderLine orderLineToUpdate);
+        Task<OrderlineGroup> GetOrderlineGroupByOrderlineId(int orderlineId);
     }
 }

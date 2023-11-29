@@ -47,5 +47,12 @@ namespace Service_Api.BusinessLogicLayer
         {
             return await _orderLineDatabaseAccess.DeleteOrderLineById(id);
         }
+
+        public async Task<OrderlineGroupDto> GetOrderlineGroupByOrderlineId(int orderlineId)
+        {
+            var orderlineGroup = await _orderLineDatabaseAccess.GetOrderlineGroupByOrderlineId(orderlineId);
+            return _mapper.Map<OrderlineGroupDto>(orderlineGroup);
+        }
+
     }
 }

@@ -6,10 +6,10 @@ namespace Service_Api.BusinessLogicLayer.Interfaces
 {
     public interface IOrderlineGroupData
     {
-        Task<OrderlineGroupDto> GetOrderlineGroupById(int id);
+        Task<OrderlineGroupDto> GetOrderlineGroupById(int orderlineID, int productId, int comboId);
         Task<List<OrderlineGroupDto>> GetAllOrderlineGroups();
-        Task<int> CreateOrderlineGroup(OrderlineGroupDto orderlineGroupDto);
+        Task CreateOrderlineGroup(OrderlineGroupDto orderlineGroupDto);
         Task<bool> UpdateOrderlineGroup(OrderlineGroupDto orderlineGroupDto);
-        Task<bool> DeleteOrderlineGroup(int id);
+        Task<bool> DeleteOrderlineGroup(int orderlineId, int productId, int comboId);
     }
 }

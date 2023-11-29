@@ -19,9 +19,9 @@ namespace Service_Api.BusinessLogicLayer
             _mapper = mapper;
         }
 
-        public async Task<OrderlineGroupDto> GetOrderlineGroupById(int id)
+        public async Task<OrderlineGroupDto> GetOrderlineGroupById(int orderlineID, int productId, int comboId)
         {
-            var orderlineGroup = await _orderlineGroupDatabaseAccess.GetOrderlineGroupById(id);
+            var orderlineGroup = await _orderlineGroupDatabaseAccess.GetOrderlineGroupById( orderlineID, productId, comboId);
             return _mapper.Map<OrderlineGroupDto>(orderlineGroup);
         }
 
@@ -31,10 +31,10 @@ namespace Service_Api.BusinessLogicLayer
             return _mapper.Map<List<OrderlineGroupDto>>(orderlineGroups);
         }
 
-        public async Task<int> CreateOrderlineGroup(OrderlineGroupDto orderlineGroupDto)
+        public async Task CreateOrderlineGroup(OrderlineGroupDto orderlineGroupDto)
         {
             var orderlineGroup = _mapper.Map<OrderlineGroup>(orderlineGroupDto);
-            return await _orderlineGroupDatabaseAccess.CreateOrderlineGroup(orderlineGroup);
+            await _orderlineGroupDatabaseAccess.CreateOrderlineGroup(orderlineGroup);
         }
 
         public async Task<bool> UpdateOrderlineGroup(OrderlineGroupDto orderlineGroupDto)
@@ -43,9 +43,9 @@ namespace Service_Api.BusinessLogicLayer
             return await _orderlineGroupDatabaseAccess.UpdateOrderlineGroupById(orderlineGroup);
         }
 
-        public async Task<bool> DeleteOrderlineGroup(int id)
+        public async Task<bool> DeleteOrderlineGroup(int orderlineID, int productId, int comboId)
         {
-            return await _orderlineGroupDatabaseAccess.DeleteOrderlineGroupById(id);
+            return await _orderlineGroupDatabaseAccess.DeleteOrderlineGroup(orderlineID, productId, comboId);
         }
     }
 }

@@ -6,10 +6,10 @@ namespace ServiceData.DatabaseLayer.Interfaces
 {
     public interface IOrderlineGroup
     {
-        Task<OrderlineGroup> GetOrderlineGroupById(int id);
+        Task CreateOrderlineGroup(OrderlineGroup orderlineGroup);
         Task<List<OrderlineGroup>> GetAllOrderlineGroups();
-        Task<int> CreateOrderlineGroup(OrderlineGroup orderlineGroup);
-        Task<bool> DeleteOrderlineGroupById(int id);
+        Task<bool> DeleteOrderlineGroup(int orderlineID, int productId, int comboId);
+        Task<OrderlineGroup> GetOrderlineGroupById(int orderlineID, int productId, int comboId);
         Task<bool> UpdateOrderlineGroupById(OrderlineGroup orderlineGroupToUpdate);
     }
 }

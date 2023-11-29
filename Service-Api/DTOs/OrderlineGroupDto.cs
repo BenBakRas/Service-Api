@@ -2,7 +2,6 @@
 {
     public class OrderlineGroupDto
     {
-        public int Id { get; set; }
         public int ProductId { get; set; }
         public int OrderlineId { get; set; }
         public int ComboId { get; set; }

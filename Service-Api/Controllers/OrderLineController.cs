@@ -107,6 +107,26 @@ public class OrderLineController : ControllerBase
         }
     }
 
+    [HttpGet("GetOrderlineGroup/{orderlineId}")]
+    public async Task<IActionResult> GetOrderLineGroupByOrderlineId(int orderlineId)
+    {
+        try
+        {
+            var orderlineGroup = await _orderLineData.GetOrderlineGroupByOrderlineId(orderlineId);
+            if (orderlineGroup == null)
+            {
+                return NotFound();
+            }
+            var orderlineGroupDto = _mapper.Map<OrderlineGroupDto>(orderlineGroup);
+            return Ok(orderlineGroupDto);
+        }
+        catch (Exception ex)
+        {
+            LogError("Error retrieving OrderlineGroup with orderlineId: " + orderlineId + " - " + ex.Message);
+            return BadRequest("Error finding OrderLine");
+        }
+    }
+
     private void LogError(string message)
     {
         var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());

@@ -51,12 +51,12 @@ public class OrderlineGroupController : ControllerBase
         return BadRequest("Invalid model state");
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetOrderlineGroupById(int id)
+    [HttpGet("{orderlineId}/{productId}/{comboId}")]
+    public async Task<IActionResult> GetOrderlineGroupById(int orderlineId, int productId, int comboId)
     {
         try
         {
-            var orderlineGroup = await _orderlineGroupData.GetOrderlineGroupById(id);
+            var orderlineGroup = await _orderlineGroupData.GetOrderlineGroupById(orderlineId, productId, comboId);
             if (orderlineGroup == null)
             {
                 return NotFound();
@@ -66,13 +66,13 @@ public class OrderlineGroupController : ControllerBase
         }
         catch (Exception ex)
         {
-            LogError("Error retrieving OrderlineGroup with Id: " + id + " - " + ex.Message);
+            LogError("Eror");
             return BadRequest("Error finding OrderlineGroup");
         }
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateOrderlineGroup(int id, OrderlineGroupDto orderlineGroupDto)
+    [HttpPut("{orderlineId}/{productId}/{comboId}")]
+    public async Task<IActionResult> UpdateOrderlineGroup(int orderlineID, int productId, int comboId, OrderlineGroupDto orderlineGroupDto)
     {
         if (ModelState.IsValid)
         {
@@ -91,12 +91,12 @@ public class OrderlineGroupController : ControllerBase
         return BadRequest("Invalid model state");
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteOrderlineGroup(int id)
+    [HttpDelete("{orderlineId}/{productId}/{comboId}")]
+    public async Task<IActionResult> DeleteOrderlineGroup(int orderlineID, int productId, int comboId)
     {
         try
         {
-            await _orderlineGroupData.DeleteOrderlineGroup(id);
+            await _orderlineGroupData.DeleteOrderlineGroup(orderlineID, productId, comboId);
             return Ok("OrderlineGroup deleted successfully");
         }
         catch (Exception ex)

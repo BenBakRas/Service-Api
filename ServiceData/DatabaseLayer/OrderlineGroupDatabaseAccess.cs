@@ -21,10 +21,9 @@ namespace ServiceData.DatabaseLayer
             _connectionString = inConnectionString;
         }
 
-        public async Task<int> CreateOrderlineGroup(OrderlineGroup orderlineGroup)
+        public async Task CreateOrderlineGroup(OrderlineGroup orderlineGroup)
         {
-            int insertedId = -1;
-            string insertString = "INSERT INTO OrderlineGroup (ProductId, OrderlineId, ComboId) OUTPUT INSERTED.ID VALUES(@ProductId, @OrderlineId, @ComboId);";
+            string insertString = "INSERT INTO OrderlineGroup (ProductId, OrderlineId, ComboId) VALUES(@ProductId, @OrderlineId, @ComboId);";
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand createCommand = new SqlCommand(insertString, con))
@@ -40,17 +39,15 @@ namespace ServiceData.DatabaseLayer
 
                 await con.OpenAsync();
 
-
-                insertedId = (int)await createCommand.ExecuteScalarAsync();
+                await createCommand.ExecuteNonQueryAsync();
             }
-            return insertedId;
         }
 
         public async Task<List<OrderlineGroup>> GetAllOrderlineGroups()
         {
             List<OrderlineGroup> foundOrderlineGroups = new List<OrderlineGroup>();
 
-            string queryString = "SELECT Id, ProductId, OrderlineId, ComboId FROM OrderlineGroup";
+            string queryString = "SELECT ProductId, OrderlineId, ComboId FROM OrderlineGroup";
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand readCommand = new SqlCommand(queryString, con))
@@ -68,15 +65,17 @@ namespace ServiceData.DatabaseLayer
             return foundOrderlineGroups;
         }
 
-        public async Task<bool> DeleteOrderlineGroupById(int id)
+        public async Task<bool> DeleteOrderlineGroup(int productId, int orderlineId, int comboId)
         {
             bool isDeleted = false;
-            string deleteString = "DELETE FROM OrderlineGroup WHERE Id = @Id";
+            string deleteString = "DELETE FROM OrderlineGroup WHERE ProductId = @ProductId AND OrderlineId = @OrderlineId AND ComboId = @ComboId";
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand deleteCommand = new SqlCommand(deleteString, con))
             {
-                deleteCommand.Parameters.AddWithValue("@Id", id);
+                deleteCommand.Parameters.AddWithValue("@ProductId", productId);
+                deleteCommand.Parameters.AddWithValue("@OrderlineId", orderlineId);
+                deleteCommand.Parameters.AddWithValue("@ComboId", comboId);
 
                 await con.OpenAsync();
                 int rowsAffected = await deleteCommand.ExecuteNonQueryAsync();
@@ -87,15 +86,19 @@ namespace ServiceData.DatabaseLayer
             return isDeleted;
         }
 
-        public async Task<OrderlineGroup> GetOrderlineGroupById(int id)
+
+
+        public async Task<OrderlineGroup> GetOrderlineGroupById(int productId, int orderlineId, int comboId)
         {
             OrderlineGroup foundOrderlineGroup = null;
-            string queryString = "SELECT Id, ProductId, OrderlineId, ComboId FROM OrderlineGroup WHERE Id = @Id";
+            string queryString = "SELECT ProductId, OrderlineId, ComboId FROM OrderlineGroup WHERE ProductId = @ProductId AND OrderlineId = @OrderlineId AND ComboId = @ComboId";
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand readCommand = new SqlCommand(queryString, con))
             {
-                readCommand.Parameters.AddWithValue("@Id", id);
+                readCommand.Parameters.AddWithValue("@ProductId", productId);
+                readCommand.Parameters.AddWithValue("@OrderlineId", orderlineId);
+                readCommand.Parameters.AddWithValue("@ComboId", comboId);
 
                 await con.OpenAsync();
                 SqlDataReader orderlineGroupsReader = await readCommand.ExecuteReaderAsync();
@@ -109,6 +112,7 @@ namespace ServiceData.DatabaseLayer
             return foundOrderlineGroup;
         }
 
+
         public async Task<bool> UpdateOrderlineGroupById(OrderlineGroup orderlineGroupToUpdate)
         {
             bool isUpdated = false;
@@ -117,7 +121,6 @@ namespace ServiceData.DatabaseLayer
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand updateCommand = new SqlCommand(updateString, con))
             {
-                updateCommand.Parameters.AddWithValue("@Id", orderlineGroupToUpdate.Id);
                 updateCommand.Parameters.AddWithValue("@ProductId", orderlineGroupToUpdate.ProductId);
                 updateCommand.Parameters.AddWithValue("@OrderlineId", orderlineGroupToUpdate.OrderlineId);
                 updateCommand.Parameters.AddWithValue("@ComboId", orderlineGroupToUpdate.ComboId);
@@ -135,12 +138,11 @@ namespace ServiceData.DatabaseLayer
         {
             int tempId, tempProductId, tempOrderlineId, tempComboId;
 
-            tempId = orderlineGroupsReader.GetInt32(orderlineGroupsReader.GetOrdinal("Id"));
             tempProductId = orderlineGroupsReader.GetInt32(orderlineGroupsReader.GetOrdinal("ProductId"));
             tempOrderlineId = orderlineGroupsReader.GetInt32(orderlineGroupsReader.GetOrdinal("OrderlineId"));
             tempComboId = orderlineGroupsReader.GetInt32(orderlineGroupsReader.GetOrdinal("ComboId"));
 
-            return new OrderlineGroup(tempId, tempProductId, tempOrderlineId, tempComboId);
+            return new OrderlineGroup(tempProductId, tempOrderlineId, tempComboId);
         }
     }
 }
