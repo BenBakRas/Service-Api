@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Service_Api.BusinessLogicLayer.Interfaces;
 using Service_Api.DTOs;
+using ServiceData.DatabaseLayer;
 using ServiceData.DatabaseLayer.Interfaces;
 using ServiceData.ModelLayer;
 using System.Collections.Generic;
@@ -48,6 +49,11 @@ namespace Service_Api.BusinessLogicLayer
         public async Task<bool> DeleteComboById(int id)
         {
             return await _comboDatabaseAccess.DeleteComboById(id);
+        }
+        public async Task<List<ComboDto>> GetCombosByCategoryAndShop(string category, int shopId)
+        {
+            List<Combo> combos = await _comboDatabaseAccess.GetCombosByCategoryAndShop(category, shopId);
+            return _mapper.Map<List<ComboDto>>(combos);
         }
     }
 }

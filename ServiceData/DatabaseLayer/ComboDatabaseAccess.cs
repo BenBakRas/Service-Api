@@ -126,6 +126,33 @@ namespace ServiceData.DatabaseLayer
             return isUpdated;
         }
 
+        public async Task<List<Combo>> GetCombosByCategoryAndShop(string category, int shopId)
+        {
+            List<Combo> combos = new List<Combo>();
+
+            string queryString = "SELECT C.* FROM Combo C INNER JOIN ShopCombo SC ON C.Id = SC.ComboId WHERE SC.ShopId = @ShopId AND C.Category = @Category";
+
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            using (SqlCommand readCommand = new SqlCommand(queryString, con))
+            {
+                readCommand.Parameters.AddWithValue("@ShopId", shopId);
+                readCommand.Parameters.AddWithValue("@Category", category);
+
+                await con.OpenAsync();
+
+                using (SqlDataReader comboReader = await readCommand.ExecuteReaderAsync())
+                {
+                    while (await comboReader.ReadAsync())
+                    {
+                        combos.Add(GetComboFromReader(comboReader));
+                    }
+                }
+            }
+
+            return combos;
+        }
+
+
         private Combo GetComboFromReader(SqlDataReader comboReader)
         {
             Combo foundCombo;

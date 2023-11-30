@@ -111,6 +111,21 @@ public class ComboController : ControllerBase
         }
     }
 
+    [HttpGet("categories/{category}/shop/{shopId}")]
+    public async Task<ActionResult<List<ComboDto>>> GetCombosByCategoryAndShop(string category, int shopId)
+    {
+        try
+        {
+            var combos = await _comboData.GetCombosByCategoryAndShop(category, shopId);
+            return Ok(combos);
+        }
+        catch (Exception ex)
+        {
+            // Log the exception or handle it as needed
+            return StatusCode(500, "Internal server error");
+        }
+    }
+
     private void LogError(string message)
     {
         var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
