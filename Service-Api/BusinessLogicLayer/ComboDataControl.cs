@@ -50,9 +50,9 @@ namespace Service_Api.BusinessLogicLayer
         {
             return await _comboDatabaseAccess.DeleteComboById(id);
         }
-        public async Task<List<ComboDto>> GetCombosByCategoryAndShop(string category, int shopId)
+        public async Task<List<ComboDto>> GetCombosByShopId(int shopId)
         {
-            List<Combo> combos = await _comboDatabaseAccess.GetCombosByCategoryAndShop(category, shopId);
+            List<Combo> combos = await _comboDatabaseAccess.GetCombosByShopId(shopId);
             return _mapper.Map<List<ComboDto>>(combos);
         }
     }

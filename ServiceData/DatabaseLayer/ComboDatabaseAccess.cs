@@ -126,7 +126,7 @@ namespace ServiceData.DatabaseLayer
             return isUpdated;
         }
 
-        public async Task<List<Combo>> GetCombosByCategoryAndShop(string category, int shopId)
+        public async Task<List<Combo>> GetCombosByShopId(int shopId)
         {
             List<Combo> combos = new List<Combo>();
 
@@ -136,7 +136,6 @@ namespace ServiceData.DatabaseLayer
             using (SqlCommand readCommand = new SqlCommand(queryString, con))
             {
                 readCommand.Parameters.AddWithValue("@ShopId", shopId);
-                readCommand.Parameters.AddWithValue("@Category", category);
 
                 await con.OpenAsync();
 

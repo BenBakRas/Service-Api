@@ -111,12 +111,12 @@ public class ComboController : ControllerBase
         }
     }
 
-    [HttpGet("categories/{category}/shop/{shopId}")]
-    public async Task<ActionResult<List<ComboDto>>> GetCombosByCategoryAndShop(string category, int shopId)
+    [HttpGet("/shop/{shopId}")]
+    public async Task<ActionResult<List<ComboDto>>> GetCombosByShopId(int shopId)
     {
         try
         {
-            var combos = await _comboData.GetCombosByCategoryAndShop(category, shopId);
+            var combos = await _comboData.GetCombosByShopId(shopId);
             return Ok(combos);
         }
         catch (Exception ex)

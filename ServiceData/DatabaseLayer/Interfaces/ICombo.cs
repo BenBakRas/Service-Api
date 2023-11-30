@@ -14,6 +14,6 @@ namespace ServiceData.DatabaseLayer.Interfaces
         Task<int> CreateCombo(Combo aCombo);
         Task<bool> DeleteComboById(int id);
         Task<bool> UpdateComboById(Combo comboToUpdate);
-        Task<List<Combo>> GetCombosByCategoryAndShop(string category, int shopId);
+        Task<List<Combo>> GetCombosByShopId(int shopId);
     }
 }

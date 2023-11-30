@@ -9,6 +9,6 @@ namespace Service_Api.BusinessLogicLayer.Interfaces
         Task<int> CreateCombo(ComboDto comboDto);
         Task<bool> UpdateComboById(int id, ComboDto comboDto);
         Task<bool> DeleteComboById(int id);
-        Task<List<ComboDto>> GetCombosByCategoryAndShop(string category, int shopId);
+        Task<List<ComboDto>> GetCombosByShopId(int shopId);
     }
 }
