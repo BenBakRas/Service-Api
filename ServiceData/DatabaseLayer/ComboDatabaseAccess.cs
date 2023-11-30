@@ -130,7 +130,7 @@ namespace ServiceData.DatabaseLayer
         {
             List<Combo> combos = new List<Combo>();
 
-            string queryString = "SELECT C.* FROM Combo C INNER JOIN ShopCombo SC ON C.Id = SC.ComboId WHERE SC.ShopId = @ShopId AND C.Category = @Category";
+            string queryString = "SELECT C.* FROM Combo C INNER JOIN ShopCombo SC ON C.Id = SC.ComboId WHERE SC.ShopId = @ShopId";
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             using (SqlCommand readCommand = new SqlCommand(queryString, con))
