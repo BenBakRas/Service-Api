@@ -1,15 +1,39 @@
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using AutoMapper;
-using Microsoft.AspNetCore.Cors;
+
 using Service_Api.BusinessLogicLayer.Interfaces;
 using Service_Api.BusinessLogicLayer;
 using Service_Api;
 using ServiceData.DatabaseLayer.Interfaces;
 using ServiceData.DatabaseLayer;
+using Microsoft.IdentityModel.Tokens;
+using Service_Api.Security;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+// Configure the JWT Authentication Service
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = "JwtBearer";
+    options.DefaultChallengeScheme = "JwtBearer";
+})
+    .AddJwtBearer("JwtBearer", jwtOptions =>
+    {
+        jwtOptions.TokenValidationParameters = new TokenValidationParameters()
+        {
+            // The SigningKey is defined in the TokenController class
+            ValidateIssuerSigningKey = true,
+            // IssuerSigningKey = new SecurityHelper(configuration).GetSecurityKey(),
+            IssuerSigningKey = new SecurityHelper(builder.Configuration).GetSecurityKey(),
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidIssuer = "https://localhost:7046",
+            ValidAudience = "https://localhost:7046",
+            ValidateLifetime = true
+        };
+    });
+
+
+
 
 // Add services to the container.
 builder.Services.AddScoped<ICustomerGroup, CustomerGroupDatabaseAccess>();
