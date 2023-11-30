@@ -147,7 +147,7 @@ public class ProductController : ControllerBase
         }
     }
 
-    [HttpGet("categories/{category}/shops/{shopId}")]
+    [HttpGet("categories/{category}/shop/{shopId}")]
     public async Task<ActionResult<List<ProductDto>>> GetProductsByCategoryAndShop(string category, int shopId)
     {
         try

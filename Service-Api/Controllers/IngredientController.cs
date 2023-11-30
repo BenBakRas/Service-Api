@@ -59,7 +59,7 @@ namespace Service_Api.Controllers
             var success = await _ingredientData.UpdateIngredientById(id, ingredientDto);
             if (success)
             {
-                return Ok("Combo updated successfully");
+                return Ok("Ingredient updated successfully");
             }
             return NotFound();
         }
@@ -70,7 +70,7 @@ namespace Service_Api.Controllers
             var success = await _ingredientData.DeleteIngredientById(id);
             if (success)
             {
-                return Ok("Combo deleted successfully");
+                return Ok("Ingredient deleted successfully");
             }
             return NotFound();
         }

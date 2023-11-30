@@ -30,7 +30,7 @@ namespace ServiceData.ModelLayer
             Barcode = barcode;
             CategoryType = categoryType;
             ProductGroup = productGroup;
-            ImageName = imageName;
+            ImageName = imageName;  
         }
 
         //Reuses constructor with Id

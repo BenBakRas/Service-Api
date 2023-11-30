@@ -190,7 +190,6 @@ namespace ServiceData.DatabaseLayer
         {
             List<Product> products = new List<Product>();
 
-            // Replace the following with your actual SQL query to fetch products by category and shop
             string queryString = "SELECT P.* FROM Product P INNER JOIN ShopProduct SP ON P.Id = SP.ProductId WHERE SP.ShopId = @ShopId AND P.Category = @Category";
 
             using (SqlConnection con = new SqlConnection(_connectionString))
