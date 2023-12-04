@@ -28,15 +28,34 @@ namespace ServiceData.DatabaseLayer
                 "VALUES (@OrderlinePrice, @Quantity, @OrderId)";
 
             using (SqlConnection con = new SqlConnection(_connectionString))
-            using (SqlCommand createCommand = new SqlCommand(insertString, con))
             {
-                createCommand.Parameters.AddWithValue("@OrderlinePrice", orderLine.OrderlinePrice);
-                createCommand.Parameters.AddWithValue("@Quantity", orderLine.Quantity);
-                createCommand.Parameters.AddWithValue("@OrderId", orderLine.OrderId);
-
-
                 await con.OpenAsync();
-                insertedId = (int)await createCommand.ExecuteScalarAsync();
+
+                // Begin a database transaction
+                using (SqlTransaction transaction = con.BeginTransaction())
+                {
+                    try
+                    {
+                        using (SqlCommand createCommand = new SqlCommand(insertString, con, transaction))
+                        {
+                            createCommand.Parameters.AddWithValue("@OrderlinePrice", orderLine.OrderlinePrice);
+                            createCommand.Parameters.AddWithValue("@Quantity", orderLine.Quantity);
+                            createCommand.Parameters.AddWithValue("@OrderId", orderLine.OrderId);
+
+                            // Execute the command and retrieve the generated ID
+                            insertedId = (int)await createCommand.ExecuteScalarAsync();
+                        }
+
+                        // Commit the transaction if everything is successful
+                        transaction.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        // Handle exceptions, log errors, or roll back the transaction in case of failure
+                        transaction.Rollback();
+                        throw; // Rethrow the exception for higher-level error handling
+                    }
+                }
             }
 
             return insertedId;

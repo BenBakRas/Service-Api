@@ -21,23 +21,45 @@ namespace ServiceData.DatabaseLayer
         {
             _connectionString = inConnectionString;
         }
-
+        //Creates a new order in the database and associates it with the specified shop.
+        //param name="aOrder"
+        //Returns The ID of the newly created order.
         public async Task<int> CreateOrder(Orders aOrder)
         {
             int insertedId = -1;
             string insertString = "INSERT INTO Orders(OrderNumber, DateTime, TotalPrice, ShopID) OUTPUT INSERTED.ID " +
-                "values(@OrderNumber, @DateTime, @TotalPrice, @ShopID)";
-            using (SqlConnection con = new SqlConnection(_connectionString))
-            using (SqlCommand CreateCommand = new SqlCommand(insertString, con))
-            {
-                CreateCommand.Parameters.AddWithValue("@OrderNumber", aOrder.OrderNumber);
-                CreateCommand.Parameters.AddWithValue("@DateTime", DateTime.Now);
-                CreateCommand.Parameters.AddWithValue("@TotalPrice", aOrder.TotalPrice);
-                CreateCommand.Parameters.AddWithValue("@ShopID", aOrder.ShopId);
+                "VALUES (@OrderNumber, @DateTime, @TotalPrice, @ShopID)";
 
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            {
                 await con.OpenAsync();
-                insertedId = (int)await CreateCommand.ExecuteScalarAsync();
+
+                using (SqlTransaction transaction = con.BeginTransaction())
+                {
+                    try
+                    {
+                        using (SqlCommand createCommand = new SqlCommand(insertString, con, transaction))
+                        {
+                            createCommand.Parameters.AddWithValue("@OrderNumber", aOrder.OrderNumber);
+                            createCommand.Parameters.AddWithValue("@DateTime", DateTime.Now);
+                            createCommand.Parameters.AddWithValue("@TotalPrice", aOrder.TotalPrice);
+                            createCommand.Parameters.AddWithValue("@ShopID", aOrder.ShopId);
+
+                            insertedId = (int)await createCommand.ExecuteScalarAsync();
+                        }
+
+
+                        transaction.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        // Handle exceptions, log, or roll back the transaction
+                        transaction.Rollback();
+                        throw; // Rethrow the exception
+                    }
+                }
             }
+
             return insertedId;
         }
 
