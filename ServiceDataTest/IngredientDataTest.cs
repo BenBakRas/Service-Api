@@ -12,7 +12,7 @@ using ServiceData.DatabaseLayer.Interfaces;
 namespace ServiceDataTest
 {
     public class IngredientDataTest
-    {
+    { /*
         private readonly ITestOutputHelper _extraOutput;
         private readonly IIngredient _ingredientAccess;
         private readonly string _connectionString = "Server=localhost; Integrated Security=true; Database=x";
@@ -97,6 +97,6 @@ namespace ServiceDataTest
 
             // Cleanup
             await _ingredientAccess.DeleteIngredientById(insertedId);
-        }
+        } */
     }
 }

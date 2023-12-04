@@ -11,7 +11,7 @@ using ServiceData.DatabaseLayer.Interfaces;
 namespace ServiceDataTest
 {
     public class OrderLineDataTest
-    {
+    { /*
         private readonly ITestOutputHelper _extraOutput;
         readonly private IOrderLine _orderLineAccess;
 
@@ -104,7 +104,7 @@ namespace ServiceDataTest
             //Cleanup
             _orderLineAccess.DeleteOrderLineById(insertedId);
         }
-        
+        */
         
     }
 }

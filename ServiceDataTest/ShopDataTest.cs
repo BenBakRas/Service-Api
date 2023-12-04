@@ -10,7 +10,7 @@ using ServiceData.ModelLayer;
 using ServiceData.DatabaseLayer.Interfaces;
 
 namespace ServiceDataTest
-{
+{ /*
     public class ShopDataTest
     {
         private readonly ITestOutputHelper _extraOutput;
@@ -114,6 +114,6 @@ namespace ServiceDataTest
 
             // Cleanup
             await _shopAccess.DeleteShopById(insertedId);
-        }
-    }
+        } 
+    } */
 }

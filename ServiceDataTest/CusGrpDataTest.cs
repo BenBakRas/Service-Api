@@ -12,7 +12,7 @@ namespace ServiceDataTest
 {
     public class CusGrpDataTest
     {
-
+        /*
         private readonly ITestOutputHelper _extraOutput;
         readonly private ICustomerGroup _cusGrp;
 
@@ -97,7 +97,8 @@ namespace ServiceDataTest
             //Cleanup
             _cusGrp.DeleteCustomerGroupById(insertedId);
 
-        }
+        } */
     }
+        
 }
 

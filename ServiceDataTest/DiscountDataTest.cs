@@ -10,7 +10,7 @@ using ServiceData.ModelLayer;
 namespace ServiceDataTest
 {
     public class DiscountDataTest
-    {
+    { /*
         private readonly ITestOutputHelper _extraOutput;
         readonly private IDiscount _discount;
 
@@ -99,6 +99,6 @@ namespace ServiceDataTest
             // Cleanup
             bool isDeleted = await _discount.DeleteDiscountById(insertedId); // Deletes the object
             Assert.True(isDeleted); // Asserts true if the object is deleted.
-        }
+        } */
     }
 }

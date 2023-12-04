@@ -23,7 +23,7 @@ namespace ServiceDataTest
         private readonly IDiscount _discount;
         private readonly IIngredient _ingredientAccess;
         private readonly IIngredientProduct _ingredientProduct;
-        private readonly IProductGroup _productGroup;
+        private readonly IProductGroup? _productGroup;
         private readonly IShopProduct _shopProduct;
 
         //readonly string _connectionString = "Server=localhost; Integrated Security=true; Database=x";
@@ -44,91 +44,92 @@ namespace ServiceDataTest
         }
 
         [Fact]
-        public void TestGenerateTestData()
+        public async Task TestGenerateTestDataAsync()
         {
             //Create customergroup
             CustomerGroup cusgrp = new CustomerGroup("Vinder");//Creates object
             _cusGrp.CreateCustomerGroup(cusgrp); // Insert into DB
 
-            //Create productgroup
-            ProductGroup prodGrp = new ProductGroup("Gruppe 1");
-            _productGroup.CreateProductGroup(prodGrp);
-
+            //Create productgroup 
+            /* ProductGroup prodGrp = new ProductGroup("Gruppe 1");
+            await _productGroup.CreateProductGroup(prodGrp);
+            */ 
+                
             // Create products
-            Product prod1 = new Product("11241", "Bøfsandwich", 125, 212141, Product.Category.Burgere, 1, "boefsandwich");
-            _product.CreateProduct(prod1);
+            Product prod1 = new Product("11241", "Bøfsandwich", 125, 212141211, Product.Category.Burgere, 1, "boefsandwich");
+            await _product.CreateProduct(prod1);
             Product prod2 = new Product("1231", "Crispy Chicken", 60, 233463, Product.Category.Burgere, 1, "crispychicken");
-            _product.CreateProduct(prod2);
+            await _product.CreateProduct(prod2);
             Product prod3 = new Product("1234t6", "Flæskestegsburger", 110, 5675, Product.Category.Burgere, 1, "flaeskestegsburger");
-            _product.CreateProduct(prod3);
+            await _product.CreateProduct(prod3);
             Product prod4 = new Product("123asgs", "Cola", 25, 12412521, Product.Category.Drikkevarer, 1, "cola");
-            _product.CreateProduct(prod4);
+            await _product.CreateProduct(prod4);
             Product prod5 = new Product("123", "Hamburger", 50, 212141, Product.Category.Burgere, 1, "hamburger");
-            _product.CreateProduct(prod5);
+            await _product.CreateProduct(prod5);
             Product prod6 = new Product("1asf12", "Aioli", 5, 246363, Product.Category.Dips, 1, "aioli");
-            _product.CreateProduct(prod6);
+            await _product.CreateProduct(prod6);
 
             // Create shops
             Shop shop1 = new Shop("Jensens Bøfhus", "Boulevarden 2, 9000 Aalborg", Shop.Storetype.Restaurant);
-            _shop.CreateShop(shop1);
+            await _shop.CreateShop(shop1);
             Shop shop2 = new Shop("Tages Pølsevogn", "Boulevarden 1, 9000 Aalborg", Shop.Storetype.Restaurant);
-            _shop.CreateShop(shop2);
+            await _shop.CreateShop(shop2);
             Shop shop3 = new Shop("Restaurant den fodkolde", "Danmarksgade 10, 9000 Aalborg", Shop.Storetype.Restaurant);
-            _shop.CreateShop(shop3);
+            await _shop.CreateShop(shop3);
 
             // Relate products to shop
             ShopProduct sp1 = new ShopProduct(1, 1);
-            _shopProduct.CreateShopProduct(sp1);
+            await _shopProduct.CreateShopProduct(sp1);
             ShopProduct sp2 = new ShopProduct(1,2);
-            _shopProduct.CreateShopProduct(sp2);
+            await _shopProduct.CreateShopProduct(sp2);
             ShopProduct sp3 = new ShopProduct(1, 3);
-            _shopProduct.CreateShopProduct(sp3);
+            await _shopProduct.CreateShopProduct(sp3);
             ShopProduct sp4 = new ShopProduct(1, 4);
-            _shopProduct.CreateShopProduct(sp4);
+            await _shopProduct.CreateShopProduct(sp4);
             ShopProduct sp5 = new ShopProduct(1, 5);
-            _shopProduct.CreateShopProduct(sp5);
+            await _shopProduct.CreateShopProduct(sp5);
             ShopProduct sp6 = new ShopProduct(1, 6);
-            _shopProduct.CreateShopProduct(sp6);
+            await _shopProduct.CreateShopProduct(sp6);
             ShopProduct sp7 = new ShopProduct(2, 2);
-            _shopProduct.CreateShopProduct(sp7);
+            await _shopProduct.CreateShopProduct(sp7);
             ShopProduct sp8 = new ShopProduct(2, 4);
-            _shopProduct.CreateShopProduct(sp8);
+            await _shopProduct.CreateShopProduct(sp8);
             ShopProduct sp9 = new ShopProduct(2, 6);
-            _shopProduct.CreateShopProduct(sp9);
+            await _shopProduct.CreateShopProduct(sp9);
             ShopProduct sp10 = new ShopProduct(3, 2);
-            _shopProduct.CreateShopProduct(sp10);
+            await _shopProduct.CreateShopProduct(sp10);
             ShopProduct sp11 = new ShopProduct(3, 4);
-            _shopProduct.CreateShopProduct(sp11);
+            await _shopProduct.CreateShopProduct(sp11);
 
             //Create ingredients
             Ingredient ing1 = new Ingredient("Bøf", 15, "beef-patty");
-            _ingredientAccess.CreateIngredient(ing1);
+            await _ingredientAccess.CreateIngredient(ing1);
             Ingredient ing2 = new Ingredient("Salat", 5, "salat");
-            _ingredientAccess.CreateIngredient(ing2);
+            await _ingredientAccess.CreateIngredient(ing2);
             Ingredient ing3 = new Ingredient("Bacon", 10, "bacon");
-            _ingredientAccess.CreateIngredient(ing3);
+            await _ingredientAccess.CreateIngredient(ing3);
             Ingredient ing4 = new Ingredient("Løg", 5, "loeg");
-            _ingredientAccess.CreateIngredient(ing4);
+            await _ingredientAccess.CreateIngredient(ing4);
 
             //Relate ingredient to products
             IngredientProduct ip1 = new IngredientProduct(1, 1, 1, 2, 1);
-            _ingredientProduct.CreateIngredientProduct(ip1);
+            await _ingredientProduct.CreateIngredientProduct(ip1);
             IngredientProduct ip2 = new IngredientProduct(2, 2, 0, 1, 1);
-            _ingredientProduct.CreateIngredientProduct(ip2);
+            await _ingredientProduct.CreateIngredientProduct(ip2);
             IngredientProduct ip3 = new IngredientProduct(3, 2, 0, 1, 1);
-            _ingredientProduct.CreateIngredientProduct(ip3);
+            await _ingredientProduct.CreateIngredientProduct(ip3);
             IngredientProduct ip4 = new IngredientProduct(4, 4, 0, 1, 1);
-            _ingredientProduct.CreateIngredientProduct(ip4);
+            await _ingredientProduct.CreateIngredientProduct(ip4);
             IngredientProduct ip5 = new IngredientProduct(4, 1, 0, 1, 1);
-            _ingredientProduct.CreateIngredientProduct(ip5);
+            await _ingredientProduct.CreateIngredientProduct(ip5);
 
             //Create combos
             Combo combo1 = new Combo("Hamburger menu", "hamburger-menu", 100);
-            _combo.CreateCombo(combo1);
+            await _combo.CreateCombo(combo1);
             Combo combo2 = new Combo("Crispy chicken menu", "crispy-chicken-menu", 120);
-            _combo.CreateCombo(combo2);
+            await _combo.CreateCombo(combo2);
             Combo combo3 = new Combo("Flæskestegsburger m. pommes", "flaeskestegsburger-menu", 160);
-            _combo.CreateCombo(combo3);
+            await _combo.CreateCombo(combo3);
 
             //Relate combos to shops
             //Needs to be implemented

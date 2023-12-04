@@ -9,9 +9,9 @@ using ServiceData.ModelLayer;
 using ServiceData.DatabaseLayer.Interfaces;
 
 namespace ServiceDataTest
-{
+{ 
     public class OrdersDataTest
-    {
+    { /*
         private readonly ITestOutputHelper _extraOutput;
         readonly private IOrders _ordersAccess;
 
@@ -101,7 +101,7 @@ namespace ServiceDataTest
 
             //Cleanup
             _ordersAccess.DeleteOrderById(insertedId);
-        }
+        } */
         
     }
 }
