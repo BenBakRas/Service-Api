@@ -111,7 +111,7 @@ public class ComboController : ControllerBase
         }
     }
 
-    [HttpGet("/shop/{shopId}")]
+    [HttpGet("shop/{shopId}")]
     public async Task<ActionResult<List<ComboDto>>> GetCombosByShopId(int shopId)
     {
         try
